@@ -1,4 +1,4 @@
-package aula_tcp;
+package src;
 
 /**
  * TCPClient: Cliente para conexão TCP
@@ -33,13 +33,17 @@ public class TCPClient {
 
             receiveThread.start();
             sendThread.start();
+            receiveThread.join();
+            sendThread.join();
 	    } catch (UnknownHostException ue){
 		System.out.println("UnknownHostException:" + ue.getMessage());
             } catch (EOFException eofe){
 		System.out.println("EOFException:" + eofe.getMessage());
             } catch (IOException ioe){
 		System.out.println("IOException:" + ioe.getMessage());
-            } finally {
+            } catch (InterruptedException ie) {
+        System.out.println("InterruptedException:" + ie.getMessage());
+			} finally {
                 try {
                     serverSocket.close();
                 } catch (IOException ioe) {

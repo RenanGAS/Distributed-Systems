@@ -8,9 +8,7 @@ package src;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Scanner;
 import src.tools.ReceiveThread;
-import src.tools.SendThread;
 
 public class TCPServer {
 
@@ -32,11 +30,7 @@ public class TCPServer {
                 /* cria um thread para receber mensagens */
                 ReceiveThread receiveThread = new ReceiveThread(clientSocket);
 
-                /* cria um thread para enviar mensagens */
-                SendThread sendThread = new SendThread(clientSocket);
-
                 receiveThread.start();
-                sendThread.start();
             } //while
 
         } catch (IOException e) {
