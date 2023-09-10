@@ -33,6 +33,7 @@ public class ReceiveThread extends Thread {
     public void run() {
         try {
             String buffer = "";
+            FSController fsController = new FSController();
             while (true) {
                 buffer = this.input.readUTF();   /* aguarda o envio de dados */
 
@@ -41,13 +42,11 @@ public class ReceiveThread extends Thread {
                 if (this.socket.getLocalPort() == 6666) {
 					String response;
 					try {
-						response = FSController.handleCommand(buffer);
+						response = fsController.handleCommand(buffer);
 						this.output.writeUTF(response);
 					} catch (IOException ioe) {
 						this.output.writeUTF("IOException: " + ioe.getMessage());
 					}
-				} else {
-					if (buffer.equals("PARAR")) break;
 				}
             }
         } catch (EOFException eofe) {
