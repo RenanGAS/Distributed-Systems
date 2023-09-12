@@ -85,6 +85,9 @@ public class FSController {
 			downloadFile(parsedCommand);
 			logger.info("File {} downloaded to Downloads directory", parsedCommand.get(1));
 			response = "SUCCESS";
+		} else if ("HELP".equals(commandToken)) {
+			logger.info("HELP command");
+			response = showCommands();
 		} else {
 			logger.warn("Unknown command: {}", command);
 			throw new IOException("Unknown command");
@@ -181,10 +184,7 @@ public class FSController {
 		});
 		
 		if (listFiles.size() > 0) {
-			String response = """
-				    Number of files: %d
-				    List of files: %s
-				    """.formatted(listFiles.size(), listFiles.toString());
+			String response = String.format("Number of files: %d\nList of files: %s", listFiles.size(), listFiles.toString());
 			return response;
 		} else {
 			logger.warn("There're no files to display");
@@ -213,10 +213,7 @@ public class FSController {
 		});
 		
 		if (listDirs.size() > 0) {
-			String response = """
-				    Number of directories: %d
-				    List of directories: %s
-				    """.formatted(listDirs.size(), listDirs.toString());
+			String response = String.format("Number of directories: %d\nList of directories: %s", listDirs.size(), listDirs.toString());
 			return response;
 		} else {
 			logger.warn("There're no directories to display");
@@ -355,4 +352,17 @@ public class FSController {
 			throw new IOException(ioe.getMessage());
 		}
 	} //downloadFile
+
+	String showCommands() {
+		String listCommands = String.format("CONNECT aluno mudar123\n" +
+							  				"PWD\n" +
+											"CHDIR nomeDiretorio\n" +
+											"GETFILES\n" +
+											"GETDIRS\n" +
+											"ADDFILE nomeArquivo.ext \"conteudo\"\n" +
+											"DELETE nomeArquivo.ext\n" +
+											"GETFILE nomeArquivo.ext\n" +
+											"EXIT");
+		return listCommands;
+	}
 }
