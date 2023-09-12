@@ -1,0 +1,47 @@
+2023-09-12 01:18:52,169 DEBUG [Thread-0] s.t.FSController [FSController.java:36] -- Hello World
+2023-09-12 02:14:11,232 INFO [main] s.TCPServer [TCPServer.java:29] -- Waiting connections...
+2023-09-12 02:14:17,891 INFO [main] s.TCPServer [TCPServer.java:35] -- Established connection!
+2023-09-12 02:14:17,893 INFO [main] s.TCPServer [TCPServer.java:29] -- Waiting connections...
+2023-09-12 02:14:34,098 INFO [Thread-0] s.t.FSController [FSController.java:64] -- PWD command
+2023-09-12 02:14:48,273 INFO [Thread-0] s.t.FSController [FSController.java:55] -- Client attemption to login
+2023-09-12 02:14:48,273 INFO [Thread-0] s.t.FSController [FSController.java:57] -- Successful login
+2023-09-12 02:15:04,569 WARN [Thread-0] s.t.FSController [FSController.java:126] -- Invalid command: Documents
+2023-09-12 02:15:04,570 INFO [Thread-0] s.t.FSController [FSController.java:68] -- Directory changed to home/aluno/Documents
+2023-09-12 02:15:14,477 INFO [Thread-0] s.t.FSController [FSController.java:72] -- GETFILES command
+2023-09-12 02:15:24,554 WARN [Thread-0] s.t.FSController [FSController.java:222] -- There're no directories to display
+2023-09-12 02:15:24,555 WARN [Thread-0] s.t.ReceiveThread [ReceiveThread.java:53] -- IOException: There're no directories here
+2023-09-12 02:15:30,416 WARN [Thread-0] s.t.FSController [FSController.java:126] -- Invalid command: ..
+2023-09-12 02:15:30,417 INFO [Thread-0] s.t.FSController [FSController.java:68] -- Directory changed to home/aluno
+2023-09-12 02:15:33,073 INFO [Thread-0] s.t.FSController [FSController.java:64] -- PWD command
+2023-09-12 02:15:37,434 INFO [Thread-0] s.t.FSController [FSController.java:75] -- GETDIRS command
+2023-09-12 02:16:00,698 INFO [Thread-0] s.t.FSController [FSController.java:78] -- Creation of the following file: resumo.txt
+2023-09-12 02:16:04,793 INFO [Thread-0] s.t.FSController [FSController.java:72] -- GETFILES command
+2023-09-12 02:16:15,648 INFO [Thread-0] s.t.FSController [FSController.java:64] -- PWD command
+2023-09-12 02:16:42,305 INFO [Thread-0] s.t.FSController [FSController.java:64] -- PWD command
+2023-09-12 02:16:52,722 INFO [Thread-0] s.t.FSController [FSController.java:75] -- GETDIRS command
+2023-09-12 02:16:56,825 INFO [Thread-0] s.t.FSController [FSController.java:72] -- GETFILES command
+2023-09-12 02:17:17,818 INFO [Thread-0] s.t.FSController [FSController.java:86] -- File resumo.txt downloaded to Downloads directory
+2023-09-12 02:17:25,186 INFO [Thread-0] s.t.FSController [FSController.java:72] -- GETFILES command
+2023-09-12 02:17:31,721 INFO [Thread-0] s.t.FSController [FSController.java:82] -- File resumo.txt deleted
+2023-09-12 02:17:34,777 INFO [Thread-0] s.t.FSController [FSController.java:72] -- GETFILES command
+2023-09-12 02:18:35,866 INFO [main] s.TCPServer [TCPServer.java:35] -- Established connection!
+2023-09-12 02:18:35,868 INFO [main] s.TCPServer [TCPServer.java:29] -- Waiting connections...
+2023-09-12 02:18:48,114 INFO [Thread-1] s.t.FSController [FSController.java:64] -- PWD command
+2023-09-12 02:18:55,017 INFO [Thread-1] s.t.FSController [FSController.java:55] -- Client attemption to login
+2023-09-12 02:18:55,018 WARN [Thread-1] s.t.FSController [FSController.java:144] -- Authentication failed
+2023-09-12 02:18:55,018 WARN [Thread-1] s.t.ReceiveThread [ReceiveThread.java:53] -- IOException: Authentication failed
+2023-09-12 02:19:01,857 INFO [Thread-1] s.t.FSController [FSController.java:55] -- Client attemption to login
+2023-09-12 02:19:01,857 INFO [Thread-1] s.t.FSController [FSController.java:57] -- Successful login
+2023-09-12 02:19:04,177 INFO [Thread-1] s.t.FSController [FSController.java:64] -- PWD command
+2023-09-12 02:19:09,189 INFO [Thread-1] s.t.SendThread [SendThread.java:93] -- Client exiting
+2023-09-12 02:19:09,195 INFO [Thread-1] s.t.SendThread [SendThread.java:119] -- SendThread finished.
+2023-09-12 02:19:09,195 WARN [Thread-1] s.t.ReceiveThread [ReceiveThread.java:59] -- IOException: null
+2023-09-12 02:19:09,196 WARN [Thread-0] s.t.ReceiveThread [ReceiveThread.java:62] -- IOException: Socket closed
+2023-09-12 02:19:09,196 INFO [Thread-0] s.t.ReceiveThread [ReceiveThread.java:74] -- ReceiveThread finished
+2023-09-12 02:19:09,196 INFO [Thread-1] s.t.ReceiveThread [ReceiveThread.java:74] -- ReceiveThread finished
+2023-09-12 02:19:16,604 INFO [Thread-1] s.t.SendThread [SendThread.java:93] -- Client exiting
+2023-09-12 02:19:16,609 WARN [Thread-0] s.t.ReceiveThread [ReceiveThread.java:59] -- IOException: null
+2023-09-12 02:19:16,610 WARN [Thread-0] s.t.ReceiveThread [ReceiveThread.java:62] -- IOException: Socket closed
+2023-09-12 02:19:16,610 INFO [Thread-0] s.t.ReceiveThread [ReceiveThread.java:74] -- ReceiveThread finished
+2023-09-12 02:19:16,610 INFO [Thread-1] s.t.SendThread [SendThread.java:119] -- SendThread finished.
+2023-09-12 02:19:16,610 INFO [Thread-0] s.t.ReceiveThread [ReceiveThread.java:74] -- ReceiveThread finished
