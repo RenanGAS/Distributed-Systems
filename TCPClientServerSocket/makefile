@@ -9,3 +9,6 @@ compile:
 
 clear:
 	rm -f src/*.class src/tools/*.class
+
+resetLogs:
+	truncate -s 0 serverLogs.log
