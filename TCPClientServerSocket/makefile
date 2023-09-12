@@ -1,11 +1,11 @@
 initServer:
-	java src.TCPServer
+	export CLASSPATH=./resources/slf4j-api-2.0.9.jar:./resources/logback-classic-1.4.11.jar:./resources/logback-core-1.4.11.jar:. && java src.TCPServer
 
 initClient:
-	java src.TCPClient
+	export CLASSPATH=./resources/slf4j-api-2.0.9.jar:./resources/logback-classic-1.4.11.jar:./resources/logback-core-1.4.11.jar:. && java src.TCPClient
 
 compile:
-	javac src/TCPServer.java src/TCPClient.java src/tools/*.java
+	export CLASSPATH=./resources/slf4j-api-2.0.9.jar:./resources/logback-classic-1.4.11.jar:./resources/logback-core-1.4.11.jar:. && javac src/*.java src/tools/*.java
 
 clear:
-	rm -f src/TCPClient.class src/TCPServer.class src/tools/ReceiveThread.class src/tools/SendThread.class
+	rm -f src/*.class src/tools/*.class
