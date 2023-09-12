@@ -2,15 +2,21 @@ package src;
 
 /**
  * TCPServer: Servidor para conexão TCP
- * Descricao: Envia informações aos seus clientes e recebe respostas
+ * Descricao: Responde requisições dos clientes
  */
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import src.tools.ReceiveThread;
 
 public class TCPServer {
+	
+	static Logger logger = LoggerFactory.getLogger(TCPServer.class);
 
     public static void main(String args[]) {
         try {
@@ -20,12 +26,14 @@ public class TCPServer {
             ServerSocket serverSocket = new ServerSocket(serverPort);
 
             while (true) {
-                System.out.println("Aguardando conexao...");
+            	logger.info("Waiting connections...");
+                //System.out.println("Aguardando conexao...");
 
                 /* aguarda conexoes */
                 Socket clientSocket = serverSocket.accept();
-
-                System.out.println("Conexao estabelecida!");
+                
+                logger.info("Established connection!");
+                //System.out.println("Conexao estabelecida!");
 
                 /* cria um thread para receber mensagens */
                 ReceiveThread receiveThread = new ReceiveThread(clientSocket);
@@ -34,7 +42,8 @@ public class TCPServer {
             } //while
 
         } catch (IOException e) {
-            System.out.println("IOException: " + e.getMessage());
+        	logger.warn("IOException: " + e.getMessage());
+            //System.out.println("IOException: " + e.getMessage());
         } //catch
     } //main
 } //class

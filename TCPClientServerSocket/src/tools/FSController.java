@@ -1,8 +1,18 @@
 package src.tools;
 
+/**
+ * FSController: Classe responsável pelos comandos sobre o sistema de arquivos
+ * Descrição: Faz a separação dos campos dos comandos e os executam sobre o sistema
+ */
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
+import java.nio.charset.Charset;
 import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
@@ -24,10 +34,17 @@ public class FSController {
 			+ "678c73c344853883acd0"; // mudar123
 	boolean userLoggedIn = false;
 	volatile Path currentPath = Paths.get(ROOT_DIR);
+	Logger logger = LoggerFactory.getLogger(FSController.class);
 	
 
 	String handleCommand(String command) throws IOException {
 		List<String> parsedCommand = new ArrayList<>();
+		String fileContent = "";
+		
+		if (command.indexOf("ADDFILE") != -1) {
+			fileContent = getFileContent(command);
+		}
+		
 		parsedCommand = parseCommand(command);
 
 		String commandToken = parsedCommand.get(0);
@@ -35,22 +52,42 @@ public class FSController {
 		String response = "";
 
 		if ("CONNECT".equals(commandToken)) {
+			logger.info("Client attemption to login");
 			if (userAuthentication(parsedCommand)) {
+				logger.info("Successful login");
 				response = "SUCCESS";
 			} else {
-				throw new IOException("ERROR: Invalid credentials");
+				logger.warn("Invalid credentials");
+				throw new IOException("Invalid credentials");
 			}
 		} else if ("PWD".equals(commandToken)) {
+			logger.info("PWD command");
 			response = getPWD();
 		} else if ("CHDIR".equals(commandToken)) {
 			changeDir(parsedCommand);
+			logger.info("Directory changed to {}", currentPath.toString());
 			response = "SUCCESS";
 		} else if ("GETFILES".equals(commandToken)) {
 			response = getFiles();
+			logger.info("GETFILES command");
 		} else if ("GETDIRS".equals(commandToken)) {
 			response = getDirs();
+			logger.info("GETDIRS command");
+		} else if ("ADDFILE".equals(commandToken)) {
+			createFile(parsedCommand, fileContent);
+			logger.info("Creation of the following file: {}", parsedCommand.get(1));
+			response = "SUCCESS";
+		} else if ("DELETE".equals(commandToken)) {
+			deleteFile(parsedCommand);
+			logger.info("File {} deleted", parsedCommand.get(1));
+			response = "SUCCESS";
+		} else if ("GETFILE".equals(commandToken)) {
+			downloadFile(parsedCommand);
+			logger.info("File {} downloaded to Downloads directory", parsedCommand.get(1));
+			response = "SUCCESS";
 		} else {
-			throw new IOException("ERROR: Unknown command");
+			logger.warn("Unknown command: {}", command);
+			throw new IOException("Unknown command");
 		}
 
 		return response;
@@ -61,6 +98,18 @@ public class FSController {
 
 		return parse(buffer, pattern);
 	} //parseCommand
+	
+	String getFileContent(String buffer) throws IOException {
+		Pattern pattern = Pattern.compile("(\\\".+\\\")", Pattern.CASE_INSENSITIVE);
+		Matcher matcher = pattern.matcher(buffer);
+		
+		if (!matcher.find()) {
+			logger.warn("Invalid syntax: {}", buffer);
+			throw new IOException("Invalid syntax: ADDFILE fileName \"content\"");
+		}
+
+		return buffer.substring(matcher.start() + 1, matcher.end() - 1);
+	}
 
 	List<String> parse(String input, Pattern pattern) throws IOException {
 		Matcher matcher = pattern.matcher(input);
@@ -73,8 +122,9 @@ public class FSController {
 				return listTokens;
 			}
 		}
-
-		throw new IOException("ERROR: Invalid command");
+		
+		logger.warn("Invalid command: {}", input);
+		throw new IOException("Invalid command");
 	} // parse
 
 	boolean userAuthentication(List<String> parsedCommand) throws IOException {
@@ -90,12 +140,14 @@ public class FSController {
 			
 			return false;
 		}
-
-		throw new IOException("ERROR: Authentication failed");
+		
+		logger.warn("Authentication failed");
+		throw new IOException("Authentication failed");
 	} //userAuthentication
 	
 	void currentDirTo(String dir) throws InvalidPathException {
 		if (USER.equals(dir) && !userLoggedIn) {
+			logger.warn("User not authenticated: attempt to enter /home/aluno directory");
 			throw new InvalidPathException("/home/aluno", "User not authenticated");
 		}
 		
@@ -135,6 +187,7 @@ public class FSController {
 				    """.formatted(listFiles.size(), listFiles.toString());
 			return response;
 		} else {
+			logger.warn("There're no files to display");
 			throw new IOException("There're no files here");
 		}
 	} //getFiles
@@ -166,12 +219,14 @@ public class FSController {
 				    """.formatted(listDirs.size(), listDirs.toString());
 			return response;
 		} else {
+			logger.warn("There're no directories to display");
 			throw new IOException("There're no directories here");
 		}
 	} //getDirs
 	
 	void changeDir(List<String> relativePath) throws IOException {
 		if (relativePath.size() > 2) {
+			logger.warn("Cannot handle multiple directory changes at once");
 			throw new IOException("Cannot handle multiple directory changes at once");
 		}
 		
@@ -197,10 +252,12 @@ public class FSController {
 					currentDirTo(uniqueDir);
 				}
 			} catch (InvalidPathException ipe) {
-				throw new IOException("ERROR: " + ipe.getMessage());
+				logger.warn(ipe.getMessage());
+				throw new IOException(ipe.getMessage());
 			}
 		} catch (InvalidPathException ipe) {
-			throw new IOException("ERROR: " + ipe.getMessage());
+			logger.warn("{}", ipe.getMessage());
+			throw new IOException(ipe.getMessage());
 		}
 	} //changeDir
 	
@@ -208,9 +265,94 @@ public class FSController {
 		Path parentPath = currentPath.getParent();
 		
 		if (parentPath == null) {
+			logger.warn("Root directory achieved: /home");
 			throw new InvalidPathException("/home", "Root directory achieved");
 		}
 		
 		currentPath = parentPath;
 	} //backToParent
+	
+	void createFile(List<String> parsedCommand, String fileContent) throws IOException {
+		if (parsedCommand.size() == 1) {
+			logger.warn("Invalid syntax: {}", parsedCommand.get(0));
+			throw new IOException("Invalid syntax: ADDFILE fileName \"content\"");
+		}
+		
+		String fileName = parsedCommand.get(1);
+		
+		Charset charset = Charset.forName("UTF-8");
+		
+		Path filePath = currentPath.resolve(fileName);
+		
+		try (BufferedWriter writer = Files.newBufferedWriter(filePath, charset)) {
+		    writer.write(fileContent, 0, fileContent.length());
+		} catch (IOException ioe) {
+			logger.warn(ioe.getMessage());
+			throw new IOException(ioe.getMessage());
+		}
+	} //createFile
+	
+	void deleteFile(List<String> parsedCommand) throws IOException {
+		if (parsedCommand.size() == 1) {
+			logger.warn("Invalid syntax: {}", parsedCommand.get(0));
+			throw new IOException("Invalid syntax: DELETE fileName");
+		}
+		
+		String fileName = parsedCommand.get(1);
+		
+		boolean result;
+		
+		try {
+			Path filePath = currentPath.resolve(fileName);
+			if (!Files.deleteIfExists(filePath)) {
+				logger.warn("This file does not exist: {}", filePath.toString());
+				throw new IOException("This file does not exist");
+			}
+		} catch (InvalidPathException ipe) {
+			logger.warn("This file does not exist: {}/{}", currentPath.toString(), fileName);
+			throw new IOException("This file does not exist");
+		}
+	} //deleteFile
+	
+	void downloadFile(List<String> parsedCommand) throws IOException {
+		if (parsedCommand.size() == 1) {
+			logger.warn("Invalid syntax: {}", parsedCommand.get(0));
+			throw new IOException("Invalid syntax: GETFILE fileName");
+		}
+		
+		String fileName = parsedCommand.get(1);
+		
+		Path filePath;
+		
+		try {
+			filePath = currentPath.resolve(fileName);
+		} catch (InvalidPathException ipe) {
+			logger.warn("This file does not exist: {}/{}", currentPath.toString(), fileName);
+			throw new IOException("This file does not exist");
+		}
+		
+		Path targetPath = Paths.get("Downloads");
+		targetPath = targetPath.resolve(fileName);
+			
+		Charset charset = Charset.forName("UTF-8");
+		
+		try (BufferedReader reader = Files.newBufferedReader(filePath, charset)) {
+		    String line = null;
+			
+			try (BufferedWriter writer = Files.newBufferedWriter(targetPath, charset)) {
+				int offset = 0;
+				
+				while ((line = reader.readLine()) != null) {
+					writer.write(line, offset, line.length());
+					offset += line.length() + 1;
+			    }
+			} catch (IOException ioe) {
+				logger.warn(ioe.getMessage());
+				throw new IOException(ioe.getMessage());
+			}
+		} catch (IOException ioe) {
+			logger.warn(ioe.getMessage());
+			throw new IOException(ioe.getMessage());
+		}
+	} //downloadFile
 }

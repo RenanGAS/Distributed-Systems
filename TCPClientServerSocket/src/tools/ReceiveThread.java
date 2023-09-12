@@ -1,8 +1,8 @@
 package src.tools;
 
 /**
- * ReceiveThread: Thread responsável pelo recebimento de mensagens
- * Descricao: Recebe informações
+ * ReceiveThread: Thread responsável por receber comandos e enviar/receber informações
+ * Descricao: Recebe comandos e enviar/receber informações
  */
 
 import java.io.DataInputStream;
@@ -10,6 +10,8 @@ import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ReceiveThread extends Thread {
     DataInputStream input;
@@ -17,6 +19,8 @@ public class ReceiveThread extends Thread {
     DataOutputStream output;
     
     Socket socket;
+    
+    Logger logger = LoggerFactory.getLogger(ReceiveThread.class);
 
     public ReceiveThread(Socket socket) {
         try {
@@ -24,7 +28,8 @@ public class ReceiveThread extends Thread {
             this.input = new DataInputStream(socket.getInputStream());
             this.output = new DataOutputStream(socket.getOutputStream());
         } catch (IOException ioe) {
-            System.out.println("IOException: " + ioe.getMessage());
+        	logger.warn("IOException: " + ioe.getMessage());
+            //System.out.println("IOException: " + ioe.getMessage());
         } //catch
     } //construtor
 
@@ -45,23 +50,28 @@ public class ReceiveThread extends Thread {
 						response = fsController.handleCommand(buffer);
 						this.output.writeUTF(response);
 					} catch (IOException ioe) {
-						this.output.writeUTF("IOException: " + ioe.getMessage());
+						logger.warn("IOException: " + ioe.getMessage());
+						this.output.writeUTF("ERROR: " + ioe.getMessage());
 					}
 				}
             }
         } catch (EOFException eofe) {
-            System.out.println("EOFException: " + eofe.getMessage());
+        	logger.warn("IOException: " + eofe.getMessage());
+            //System.out.println("EOFException: " + eofe.getMessage());
         } catch (IOException ioe) {
-            System.out.println("IOException: " + ioe.getMessage());
+        	logger.warn("IOException: " + ioe.getMessage());
+            //System.out.println("IOException: " + ioe.getMessage());
         } finally {
             try {
                 this.input.close();
                 this.output.close();
                 this.socket.close();
             } catch (IOException ioe) {
-                System.err.println("IOException: " + ioe);
+            	logger.warn("IOException: " + ioe.getMessage());
+                //System.err.println("IOException: " + ioe.getMessage());
             }
         }
-        System.out.println("ReceiveThread finished.");
+        logger.info("ReceiveThread finished");
+        //System.out.println("ReceiveThread finished.");
     } //run
 } //class

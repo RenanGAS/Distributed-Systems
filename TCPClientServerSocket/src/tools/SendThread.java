@@ -1,8 +1,8 @@
 package src.tools;
 
 /**
- * SendThread: Thread responsável pelo envio de mensagens
- * Descrição: Envia informações
+ * SendThread: Thread responsável pelo envio de comandos
+ * Descrição: Envia comandos
  */
 
 import java.io.DataInputStream;
@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SendThread extends Thread {
     DataInputStream input;
@@ -25,6 +27,8 @@ public class SendThread extends Thread {
     DataOutputStream output;
 
     Socket socket;
+    
+    Logger logger = LoggerFactory.getLogger(SendThread.class);
 
     public SendThread(Socket socket) {
         try {
@@ -32,12 +36,13 @@ public class SendThread extends Thread {
             this.input = new DataInputStream(socket.getInputStream());
             this.output = new DataOutputStream(socket.getOutputStream());
         } catch (IOException ioe) {
-            System.out.println("IOException: " + ioe.getMessage());
+        	logger.warn("IOException: " + ioe.getMessage());
+            //System.out.println("IOException: " + ioe.getMessage());
         } //catch
         
     } //construtor
     
-    String handleConnectUser(String buffer) throws IOException {
+    String handleConnectUser(String buffer) throws IOException {  // faz o hash da senha
     	Pattern pattern = Pattern.compile("\\s+", Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(buffer);
 
@@ -63,7 +68,8 @@ public class SendThread extends Thread {
 					
 					password = sb.toString();
 				} catch (NoSuchAlgorithmException nsae) {
-					throw new IOException("ERROR: " + nsae.getMessage());
+					logger.warn("NoSuchAlgorithmException: " + nsae.getMessage());
+					throw new IOException("NoSuchAlgorithmException: " + nsae.getMessage());
 				}
 				
 				return listTokens.get(0) + " " + listTokens.get(1) + " " + password;
@@ -83,27 +89,34 @@ public class SendThread extends Thread {
             while (true) {
                 buffer = reader.nextLine(); // lê mensagem via teclado
                 
-                if (buffer.trim().equals("EXIT")) break;
+                if (buffer.trim().equals("EXIT")) {
+                	logger.info("Client exiting");
+                	break;
+                }
                 
                 if (buffer.indexOf("CONNECT") != -1) {
                 	buffer = handleConnectUser(buffer);
                 }
                 
-                this.output.writeUTF(buffer);      	// envia a mensagem para o servidor
+                this.output.writeUTF(buffer);  // envia a mensagem para o servidor
             }
         } catch (EOFException eofe) {
-            System.out.println("EOFException: " + eofe.getMessage());
+        	logger.warn("EOFException: " + eofe.getMessage());
+            //System.out.println("EOFException: " + eofe.getMessage());
         } catch (IOException ioe) {
-            System.out.println("IOException: " + ioe.getMessage());
+        	logger.warn("IOException: " + ioe.getMessage());
+            //System.out.println("IOException: " + ioe.getMessage());
         } finally {
             try {
                 this.input.close();
                 this.output.close();
                 this.socket.close();
             } catch (IOException ioe) {
-                System.err.println("IOException: " + ioe);
+            	logger.warn("IOException: " + ioe.getMessage());
+                //System.err.println("IOException: " + ioe);
             }
         }
-        System.out.println("SendThread finished.");
+        logger.info("SendThread finished.");
+        //System.out.println("SendThread finished.");
     } //run
 } //class
