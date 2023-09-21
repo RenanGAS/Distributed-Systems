@@ -13,6 +13,7 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.nio.charset.StandardCharsets;
 
 public class SendFile {
 	Path filePath;
@@ -39,26 +40,42 @@ public class SendFile {
 	}
 	
 	public void startSendTask() throws IOException {
+		System.out.println("SendFile - startSendTask");
+		
 		if (!isServerAlive()) {
 			throw new IOException("The server is down");
 		}
+		
+		System.out.println("SendFile - System is alive");
 		
 		ByteBuffer byteBuffer = readFile(this.fileSize);
 		
 		try {
 			stablishConnection();
+			System.out.println("Superou stablishConnection");
 		} catch (IndexOutOfBoundsException e) {
+			System.out.println("Exception");
 			throw new IOException("fileName is too big");
 		} catch (IOException e) {
+			System.out.println("Exception");
 			throw new IOException(e.getMessage());
 		}
 		
+		System.out.println("Connection stablished");
+		
+		System.out.println("SendFile - Loop - Sending packets");
+		
+		byteBuffer = byteBuffer.position(0);
+		
 		while (byteBuffer.hasRemaining()) {
+			System.out.println("Buffer offset: " + Integer.toString(byteBuffer.position()));
+			System.out.println("Buffer remaining: " + Integer.toString(byteBuffer.remaining()));
+			
 			byte[] buffer = new byte[1024];
 			
-			try {
+			if (byteBuffer.remaining() >= 1024) {
 				byteBuffer = byteBuffer.get(buffer, 0, 1024);
-			} catch (BufferUnderflowException e) {
+			} else {
 				byteBuffer = byteBuffer.get(buffer, 0, byteBuffer.remaining());
 			}
 	        
@@ -66,9 +83,10 @@ public class SendFile {
 			
 		    this.dgramSocket.send(dgramPacket);
 		}
+		System.out.println("All packets sent");
 		
 		byte[] commandBuffer = new byte[10];
-		System.arraycopy("FINAL", 0, commandBuffer, 0, 10);
+		System.arraycopy("FINAL".getBytes(StandardCharsets.UTF_8), 0, commandBuffer, 0, 5);
 		
 		byte[] checksumBuffer = generateChecksum(byteBuffer.array());
 		
@@ -77,7 +95,9 @@ public class SendFile {
 		System.arraycopy(checksumBuffer, 0, bufferRequest, 10, 20);
 		
 		DatagramPacket finalPacket = new DatagramPacket(bufferRequest, bufferRequest.length, this.serverIp, this.serverPort);
+		
 		this.dgramSocket.send(finalPacket);
+		System.out.println("Final packet sent");
 	}
 	
 	boolean isServerAlive() {
@@ -92,20 +112,35 @@ public class SendFile {
 	}
 	
 	void stablishConnection() throws IndexOutOfBoundsException, IOException {
+		System.out.println("SendFile - stablishConnection");
+
 		byte[] commandBuffer = new byte[10];
 		int commandLenght = commandBuffer.length;
-		System.arraycopy("SEND", 0, commandBuffer, 0, commandLenght);
+
+		byte[] send = "SEND".getBytes(StandardCharsets.UTF_8);
+		System.arraycopy(send, 0, commandBuffer, 0, 4);
+
+		//System.out.format("commandBuffer: %s", new String(commandBuffer, StandardCharsets.UTF_8));
 		
 		byte[] fileNameBuffer = new byte[100];
 		int fileNameLenght = fileNameBuffer.length;
-		System.arraycopy(this.fileName.getBytes(), 0, fileNameBuffer, 0, fileNameLenght);
+		System.arraycopy(this.fileName.getBytes(StandardCharsets.UTF_8), 0, fileNameBuffer, 0, this.fileName.length());
+
+		//System.out.format("fileNameBuffer: %s", new String(fileNameBuffer, StandardCharsets.UTF_8));
 		
 		byte[] fileSizeBuffer = ByteBuffer.allocate(4).putInt(this.fileSize).array();
+
+		//ByteBuffer wrapped = ByteBuffer.wrap(fileSizeBuffer);
+		//int fileSizeValue = wrapped.getInt();
+
+		//System.out.format("fileSizeValue: %d", fileSizeValue);
 		
 		byte[] bufferRequest = new byte[1024];
 		System.arraycopy(commandBuffer, 0, bufferRequest, 0, commandLenght);
 		System.arraycopy(fileNameBuffer, 0, bufferRequest, commandLenght, fileNameLenght);
-		System.arraycopy(fileSizeBuffer, 0, bufferRequest, fileNameLenght, Integer.BYTES);
+		System.arraycopy(fileSizeBuffer, 0, bufferRequest, fileNameLenght + commandLenght, Integer.BYTES);
+
+		//System.out.format("bufferRequest: %s", new String(bufferRequest, StandardCharsets.UTF_8));
 	        
 	    DatagramPacket request = new DatagramPacket(bufferRequest, bufferRequest.length, this.serverIp, this.serverPort);
 	    
@@ -113,12 +148,20 @@ public class SendFile {
         
         DatagramPacket response = new DatagramPacket(bufferResponse, bufferResponse.length);
 		
+        System.out.println("Sending first packet");
+        
 	    this.dgramSocket.send(request);
 	    
-	    this.dgramSocket.receive(response);
+	    System.out.println("Depois de mandar");
+	    
+	    //this.dgramSocket.receive(response);
+			
+	    System.out.println("First packet received");
 	}
 	
 	ByteBuffer readFile(int bufferLenght) throws IOException {
+		System.out.println("SendFile - readFile");
+		
 		ByteBuffer byteBuffer = ByteBuffer.allocate(bufferLenght);
 		FileChannel fChannel = FileChannel.open(this.filePath);
 		fChannel.read(byteBuffer);

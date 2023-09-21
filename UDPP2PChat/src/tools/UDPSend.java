@@ -55,6 +55,7 @@ public class UDPSend extends Thread {
 					Path filePath = Paths.get("./resources/" + parsedMsg.get(1));
 					SendFile sendFile = new SendFile(filePath, dgramSocket, this.dstIp, this.dstPort);
 					sendFile.startSendTask();
+					System.out.println("Saiu do SendFile");
 				} catch (InvalidPathException e) {
 					System.out.println(e.getMessage());
 				} catch (IOException e) {
