@@ -1,7 +1,10 @@
 package src.tools;
 
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -14,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -59,7 +63,7 @@ public class ReceiveFile {
 		
 		ByteBuffer byteBuffer = ByteBuffer.allocate(this.fileSize);
 		
-		byte[] checksum = new byte[20];
+		byte[] checksum = new byte[40];
 		
 		System.out.println("ReceiveFile - Loop: Sending file content");
 		while (byteBuffer.hasRemaining()) {
@@ -98,18 +102,24 @@ public class ReceiveFile {
 		System.arraycopy(dgramPacket.getData(), 0, commandBuffer, 0, 10);
 		
 		String commandString = new String(commandBuffer, StandardCharsets.UTF_8);
+		commandString = commandString.trim();
+		System.out.println("command length: " + Integer.toString(commandString.length()));
 		
 		System.out.println("commandString: " + commandString);
 		
 		if ("FINAL".equals(commandString)) {
-			System.arraycopy(dgramPacket.getData(), 10, checksum, 0, 20);
+			System.arraycopy(dgramPacket.getData(), 10, checksum, 0, 40);
 			System.out.println("Receiving checksum packet");
 		}
 		
-		byte[] checksumServer = generateChecksum(byteBuffer.array());
+		String checksumServer = generateChecksum(byteBuffer.array());
 		System.out.println("Current checksum calculated");
 		
-		if (checksumServer.equals(checksum)) {
+		String checksumClient = new String(checksum, StandardCharsets.UTF_8);
+		
+		System.out.println(checksumServer + " == " + checksumClient);
+		
+		if (checksumServer.equals(checksumClient)) {
 			System.out.println("Successful Upload");
 		} else {
 			System.out.println("Fail Upload");
@@ -123,28 +133,41 @@ public class ReceiveFile {
 			
 			System.out.println("filePath: " + filePath.toString());
 			
-			try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
-				byte[] conteudo = byteBuffer.array();
-				String conteudoString = new String(conteudo, StandardCharsets.UTF_8);
+			FileOutputStream fout = null;
 				
-			    writer.write(conteudoString.toCharArray(), 0, conteudoString.length());
-			} catch (IOException ioe) {
-				throw new IOException(ioe.getMessage());
+			try {
+				fout = new FileOutputStream(filePath.toAbsolutePath().toFile());
+				fout.write(byteBuffer.array());
+			} catch (FileNotFoundException e) {
+				System.out.println(e.getMessage());
+			} catch (IOException e) {
+				System.out.println(e.getMessage());
+			} finally {
+				fout.flush();
+				fout.close();
 			}
 		} catch (InvalidPathException e) {
-			System.out.println(e.getMessage());
-		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		}
 	}
 	
-	byte[] generateChecksum(byte[] fileContent) throws IOException {
+	String generateChecksum(byte[] fileContent) throws IOException {
 		try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
             
             byte[] messageDigest = md.digest(fileContent);
             
-            return messageDigest;
+            BigInteger no = new BigInteger(1, messageDigest);
+            
+            String hashtext = no.toString(16);
+            
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+            
+            System.out.println("checksum: " + hashtext);
+            
+            return hashtext;
         } catch (NoSuchAlgorithmException e) {
             throw new IOException(e.getMessage());
         }

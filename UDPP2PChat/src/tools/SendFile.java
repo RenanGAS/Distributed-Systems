@@ -1,6 +1,8 @@
 package src.tools;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.DatagramPacket;
@@ -88,11 +90,11 @@ public class SendFile {
 		byte[] commandBuffer = new byte[10];
 		System.arraycopy("FINAL".getBytes(StandardCharsets.UTF_8), 0, commandBuffer, 0, 5);
 		
-		byte[] checksumBuffer = generateChecksum(byteBuffer.array());
+		String checksumString = generateChecksum(byteBuffer.array());
 		
 		byte[] bufferRequest = new byte[1024];
 		System.arraycopy(commandBuffer, 0, bufferRequest, 0, 10);
-		System.arraycopy(checksumBuffer, 0, bufferRequest, 10, 20);
+		System.arraycopy(checksumString.getBytes(StandardCharsets.UTF_8), 0, bufferRequest, 10, 40);
 		
 		DatagramPacket finalPacket = new DatagramPacket(bufferRequest, bufferRequest.length, this.serverIp, this.serverPort);
 		
@@ -163,19 +165,40 @@ public class SendFile {
 		System.out.println("SendFile - readFile");
 		
 		ByteBuffer byteBuffer = ByteBuffer.allocate(bufferLenght);
-		FileChannel fChannel = FileChannel.open(this.filePath);
-		fChannel.read(byteBuffer);
+		
+		FileInputStream fin = null;
+		
+		try {
+			fin = new FileInputStream(this.filePath.toAbsolutePath().toFile());
+			byteBuffer = byteBuffer.put(fin.readAllBytes()) ;
+		} catch (FileNotFoundException e) {
+			System.out.println(e.getMessage());
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		} finally {
+			fin.close();
+		}
 		
 		return byteBuffer;
 	}
 	
-	byte[] generateChecksum(byte[] fileContent) throws IOException {
+	String generateChecksum(byte[] fileContent) throws IOException {
 		try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
             
             byte[] messageDigest = md.digest(fileContent);
             
-            return messageDigest;
+            BigInteger no = new BigInteger(1, messageDigest);
+            
+            String hashtext = no.toString(16);
+            
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+            
+            System.out.println("checksum: " + hashtext);
+            
+            return hashtext;
         } catch (NoSuchAlgorithmException e) {
             throw new IOException(e.getMessage());
         }
