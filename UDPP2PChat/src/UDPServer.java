@@ -20,7 +20,7 @@ public class UDPServer {
             
             String nickName = "Server";
             
-            UDPReceive receiveThread = new UDPReceive(dgramSocket, nickName, null, 0);
+            UDPReceive receiveThread = new UDPReceive(dgramSocket, nickName, null, 0, "");
             
             receiveThread.start();
         } catch (SocketException e) {

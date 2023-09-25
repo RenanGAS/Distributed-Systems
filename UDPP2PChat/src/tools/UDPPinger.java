@@ -11,42 +11,40 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.nio.charset.StandardCharsets;
 
 public class UDPPinger {
-	InetAddress dstIp;
-	int dstPort;
-	
-	public UDPPinger(InetAddress dstIp, int dstPort) {
-		this.dstIp = dstIp;
-		this.dstPort = dstPort;
-	}
 
-    public void sendPing() throws SocketTimeoutException{
+    public DatagramPacket sendPing(String nicknameSender, String messageContent, InetAddress dstIp, int dstPort) throws SocketTimeoutException{
     	DatagramSocket dgramSocket = null;
         try {
         	dgramSocket = new DatagramSocket(1234);
             dgramSocket.setSoTimeout(3000);
             
-            byte[] bufferRequest = "pI4g".getBytes();
+            PacketData packetData = new PacketData();
+            byte[] data = packetData.format("4", nicknameSender, messageContent);
  	        
- 	        DatagramPacket request = new DatagramPacket(bufferRequest, bufferRequest.length, this.dstIp, this.dstPort);
+ 	        DatagramPacket request = new DatagramPacket(data, data.length, dstIp, dstPort);
  	        
- 	        byte[] bufferResponse = new byte[1000];
+ 	        byte[] bufferResponse = new byte[1024];
            
  	        DatagramPacket response = new DatagramPacket(bufferResponse, bufferResponse.length);
            
  	        dgramSocket.send(request);
             
  	        dgramSocket.receive(response);
+ 	        
+ 	        return response;
         } catch (SocketTimeoutException e) {
-        	dgramSocket.close();
             throw new SocketTimeoutException("Time out");
         } catch (SocketException e) {
             System.out.println(e.getMessage() + " - Pinger");
         } catch (IOException e) {
             System.out.println(e.getMessage() + " - Pinger");
-        } //catc
-
-        dgramSocket.close();
+        } finally {
+        	dgramSocket.close();
+        }
+        
+		return null;
     } //main
 } //class

@@ -1,10 +1,12 @@
 package src.tools;
 
 /**
- * UDPClient: Cliente UDP Descricao: Envia uma msg em um datagrama e recebe a
- * mesma msg do servidor
+ * UDPSend
  */
+
 import java.net.*;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,8 +16,10 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 import java.io.*;
 import javax.swing.JOptionPane;
+
 
 public class UDPSend extends Thread {
 	DatagramSocket dgramSocket;
@@ -23,7 +27,7 @@ public class UDPSend extends Thread {
 	InetAddress dstIp; 
 	int dstPort;
 	
-	public UDPSend (DatagramSocket dgramSocket, String nickName, InetAddress dstIp, int dstPort) {
+	public UDPSend(DatagramSocket dgramSocket, String nickName, InetAddress dstIp, int dstPort) {
 		this.nickName = nickName;
 		this.dstPort = dstPort;
 		try {
@@ -32,68 +36,68 @@ public class UDPSend extends Thread {
 		} catch (Exception e) {
 			System.out.println(e.getMessage() + " - Send");
 		}
-	}
+	} //UDPSend
 	
-	void handleMsg(String msg) {
-		List<String> parsedMsg = new ArrayList<>();
-		
-		parsedMsg = parseMsg(msg);
-
-		String firstToken = parsedMsg.get(0);
-
-        try {
-        	if ("ECHO".equals(firstToken)) {
-				try {
-					UDPPinger pinger = new UDPPinger(this.dstIp, this.dstPort);
-					pinger.sendPing();
-					System.out.println(parsedMsg.get(1));
-				} catch (SocketTimeoutException e) {
-					System.out.println(e.getMessage());
-				}
-			} else if ("SEND".equals(firstToken)) {
-				try {
-					Path filePath = Paths.get("./resources/" + parsedMsg.get(1));
-					SendFile sendFile = new SendFile(filePath, dgramSocket, this.dstIp, this.dstPort);
-					sendFile.startSendTask();
-					System.out.println("Saiu do SendFile");
-				} catch (InvalidPathException e) {
-					System.out.println(e.getMessage());
-				} catch (IOException e) {
-					System.out.println(e.getMessage());
-				}
-			} else {
-	 			msg = msg.concat(" - " + this.nickName);
-	 			
-	 			byte[] bufferRequest = msg.getBytes();
-	 	        
-	 	        DatagramPacket request = new DatagramPacket(bufferRequest, bufferRequest.length, this.dstIp, this.dstPort);
-	 	        
-	 			this.dgramSocket.send(request);
-	 		}
-        } catch (IOException e) {
-			System.out.println(e.getMessage()+ " - Send");
-		}			
-	} //handleEcho
-	
-	List<String> parseMsg(String input) {
-		Pattern pattern = Pattern.compile("($|\\s+)", Pattern.CASE_INSENSITIVE);
-		Matcher matcher = pattern.matcher(input);
-
-		if (matcher.find()) {
-			String[] sequence = pattern.split(input);
-
-			if (sequence.length > 0) {
-				List<String> listTokens = Arrays.asList(sequence);
-				return listTokens;
+	void handleMsg(String messageType, String messageContent) throws IOException {
+		try {
+			if (messageContent.length() > 255) {
+				throw new IOException("Message content is too long");
 			}
+			
+			switch (messageType) {
+				case "1":
+					System.out.println("Normal message type\n");
+					sendPacket(messageType, messageContent);
+					break;
+				case "2":
+					System.out.println("Emoji message type\n");
+					sendPacket(messageType, messageContent);
+					break;
+				case "3":
+					System.out.println("URL message type\n");
+					sendPacket(messageType, messageContent);
+					break;
+				case "4":
+					System.out.println("Ping message type\n");
+					UDPPinger pinger = new UDPPinger();
+					DatagramPacket response = pinger.sendPing(this.nickName, messageContent, this.dstIp, this.dstPort);
+					
+					PacketParser packetParser = new PacketParser();
+					packetParser.parsePacket(response);
+					
+					System.out.format("%s: %s\n", packetParser.getPacketNickname(), packetParser.getPacketContent());
+					break;
+				case "5":
+					System.out.println("Send message type\n");
+					Path filePath = Paths.get("./resources/" + messageContent);
+					SendFile sendFile = new SendFile(this.nickName, filePath, dgramSocket, this.dstIp, this.dstPort);
+					sendFile.startSendTask();
+					break;
+				default:
+					System.out.println("Unexpected message type: " + messageType);
+			}
+		} catch (InvalidPathException e) {
+			System.out.println(e.getMessage());
+		} catch (SocketTimeoutException e) {
+			System.out.println(e.getMessage());
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
 		}
-		
-		return null;
-	} //parseMsg
+	} //handleMsg
+	
+	void sendPacket(String messageType, String parsedContent) throws IOException {
+		PacketData packetData = new PacketData();
+		byte[] data = packetData.format(messageType, this.nickName, parsedContent);
+	        
+        DatagramPacket request = new DatagramPacket(data, data.length, this.dstIp, this.dstPort);
+        
+		this.dgramSocket.send(request);
+	} //sendPacket
 
 	@Override
     public void run() {
-        Scanner reader = new Scanner(System.in); // ler mensagens via teclado
+        Scanner reader = new Scanner(System.in);
+        MessageParser msgParser = new MessageParser();
 		
 		while (true) {
 		    String msg = reader.nextLine();
@@ -102,7 +106,16 @@ public class UDPSend extends Thread {
 		    	break;
 		    }
 		    
-		    handleMsg(msg);
+		    try {
+		    	msgParser.parseMsg(msg);
+
+				String messageType = msgParser.getMessageType();
+				String messageContent = msgParser.getMessageContent();
+				
+				handleMsg(messageType, messageContent);
+			} catch (IOException e) {
+				System.out.println(e.getMessage());
+			}
 		}
 
 		System.out.println("DatagramSocket closed - Send");

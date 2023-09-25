@@ -28,25 +28,19 @@ public class ReceiveFile {
 	String fileName;
 	int fileSize;
 	
-	public ReceiveFile(DatagramSocket dgramSocket, DatagramPacket dgramPacket) {
+	public ReceiveFile(DatagramSocket dgramSocket, String fileName, int fileSize, InetAddress clientIp, int clientPort) {
 		this.dgramSocket = dgramSocket;
-		this.clientIp = dgramPacket.getAddress();
+		this.clientIp = clientIp;
 		System.out.format("ReceiveFile - clientIp: %s", this.clientIp.toString());
 		
-		this.clientPort = dgramPacket.getPort();
+		this.clientPort = clientPort;
 		System.out.format("ReceiveFile - clientPort: %d", this.clientPort);
 		
-		byte[] fileNameBuffer = new byte[100];
-		System.arraycopy(dgramPacket.getData(), 10, fileNameBuffer, 0, 100);
-		this.fileName = new String(fileNameBuffer, StandardCharsets.UTF_8);
-		this.fileName = this.fileName.replace("\0", "");
+		this.fileName = fileName;
 
 		System.out.format("ReceiveFile - fileName: %s", this.fileName);
 
-		byte[] fileSizeBuffer = new byte[4];
-		System.arraycopy(dgramPacket.getData(), 110, fileSizeBuffer, 0, 4);
-		ByteBuffer wrapped = ByteBuffer.wrap(fileSizeBuffer);
-		this.fileSize = wrapped.getInt();
+		this.fileSize = fileSize;
 		
 		System.out.format("ReceiveFile - fileSize: %d", this.fileSize);
 	}
@@ -54,12 +48,12 @@ public class ReceiveFile {
 	public void startReceiveTask() throws IOException {
 		System.out.println("Enter startReceiveTask");
 		
-		byte[] bufferRequest = "Server ready".getBytes(StandardCharsets.UTF_8);
-	        
-        DatagramPacket request = new DatagramPacket(bufferRequest, bufferRequest.length, this.clientIp, this.clientPort);
-        
-        System.out.println("Packet 'server ready' sent");
-		this.dgramSocket.send(request);
+//		byte[] bufferRequest = "Server ready".getBytes(StandardCharsets.UTF_8);
+//	        
+//        DatagramPacket request = new DatagramPacket(bufferRequest, bufferRequest.length, this.clientIp, this.clientPort);
+//        
+//        System.out.println("Packet 'server ready' sent");
+//		this.dgramSocket.send(request);
 		
 		ByteBuffer byteBuffer = ByteBuffer.allocate(this.fileSize);
 		
@@ -82,9 +76,9 @@ public class ReceiveFile {
 			int bufferRemaining = byteBuffer.remaining();
 			
 			if (bufferRemaining >= dgramLength) {
-				byteBuffer = byteBuffer.put(dgramPacket.getData(), 0, dgramLength);
+				byteBuffer.put(dgramPacket.getData(), 0, dgramLength);
 			} else {
-				byteBuffer = byteBuffer.put(dgramPacket.getData(), 0, bufferRemaining);
+				byteBuffer.put(dgramPacket.getData(), 0, bufferRemaining);
 			}
 		}
 		
@@ -98,24 +92,18 @@ public class ReceiveFile {
 		this.dgramSocket.receive(dgramPacket);
 		System.out.println("Checksum packet arrived");
 		
-		byte[] commandBuffer = new byte[10];
-		System.arraycopy(dgramPacket.getData(), 0, commandBuffer, 0, 10);
+		PacketParser packetChecksumParser = new PacketParser();
+		packetChecksumParser.parseCheckSumPacket(dgramPacket);
 		
-		String commandString = new String(commandBuffer, StandardCharsets.UTF_8);
-		commandString = commandString.trim();
-		System.out.println("command length: " + Integer.toString(commandString.length()));
+		String checksumClient = "";
 		
-		System.out.println("commandString: " + commandString);
-		
-		if ("FINAL".equals(commandString)) {
-			System.arraycopy(dgramPacket.getData(), 10, checksum, 0, 40);
+		if ("6".equals(packetChecksumParser.getPacketType())) {
+			checksumClient = packetChecksumParser.getPacketChecksum();
 			System.out.println("Receiving checksum packet");
 		}
 		
 		String checksumServer = generateChecksum(byteBuffer.array());
 		System.out.println("Current checksum calculated");
-		
-		String checksumClient = new String(checksum, StandardCharsets.UTF_8);
 		
 		System.out.println(checksumServer + " == " + checksumClient);
 		

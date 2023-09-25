@@ -24,12 +24,14 @@ public class SendFile {
 	int fileSize; // bytes
 	InetAddress serverIp;
 	int serverPort;
+	String nicknameSender;
 	
-	public SendFile(Path filePath, DatagramSocket dgramSocket, InetAddress serverIp, int serverPort) throws IOException {
+	public SendFile(String nicknameSender, Path filePath, DatagramSocket dgramSocket, InetAddress serverIp, int serverPort) throws IOException {
 		if (filePath != null && dgramSocket != null && serverIp != null && serverPort != 0) {
 			this.dgramSocket = dgramSocket;
 			this.filePath = filePath;
 			this.fileName = filePath.getFileName().toString();
+			this.nicknameSender = nicknameSender;
 			
 			File file = new File(this.filePath.toString());
 			this.fileSize = (int)file.length();
@@ -87,16 +89,12 @@ public class SendFile {
 		}
 		System.out.println("All packets sent");
 		
-		byte[] commandBuffer = new byte[10];
-		System.arraycopy("FINAL".getBytes(StandardCharsets.UTF_8), 0, commandBuffer, 0, 5);
-		
 		String checksumString = generateChecksum(byteBuffer.array());
 		
-		byte[] bufferRequest = new byte[1024];
-		System.arraycopy(commandBuffer, 0, bufferRequest, 0, 10);
-		System.arraycopy(checksumString.getBytes(StandardCharsets.UTF_8), 0, bufferRequest, 10, 40);
+		PacketData packetData = new PacketData();
+		byte[] data = packetData.format("6", checksumString);
 		
-		DatagramPacket finalPacket = new DatagramPacket(bufferRequest, bufferRequest.length, this.serverIp, this.serverPort);
+		DatagramPacket finalPacket = new DatagramPacket(data, data.length, this.serverIp, this.serverPort);
 		
 		this.dgramSocket.send(finalPacket);
 		System.out.println("Final packet sent");
@@ -104,9 +102,17 @@ public class SendFile {
 	
 	boolean isServerAlive() {
 		try {
-			UDPPinger pinger = new UDPPinger(this.serverIp, this.serverPort);
-			pinger.sendPing();
+			UDPPinger pinger = new UDPPinger();
+			DatagramPacket response = pinger.sendPing(this.nicknameSender, "The server is alive", this.serverIp, this.serverPort);
+			
+			PacketParser packetParser = new PacketParser();
+			
+			packetParser.parsePacket(response);
+			System.out.format("%s: %s", packetParser.getPacketNickname(), packetParser.getPacketContent());
 		} catch (SocketTimeoutException e) {
+			return false;
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
 			return false;
 		}
 		
@@ -115,38 +121,16 @@ public class SendFile {
 	
 	void stablishConnection() throws IndexOutOfBoundsException, IOException {
 		System.out.println("SendFile - stablishConnection");
-
-		byte[] commandBuffer = new byte[10];
-		int commandLenght = commandBuffer.length;
-
-		byte[] send = "SEND".getBytes(StandardCharsets.UTF_8);
-		System.arraycopy(send, 0, commandBuffer, 0, 4);
-
-		//System.out.format("commandBuffer: %s", new String(commandBuffer, StandardCharsets.UTF_8));
 		
-		byte[] fileNameBuffer = new byte[100];
-		int fileNameLenght = fileNameBuffer.length;
-		System.arraycopy(this.fileName.getBytes(StandardCharsets.UTF_8), 0, fileNameBuffer, 0, this.fileName.length());
-
-		//System.out.format("fileNameBuffer: %s", new String(fileNameBuffer, StandardCharsets.UTF_8));
+		PacketData packetData = new PacketData();
 		
-		byte[] fileSizeBuffer = ByteBuffer.allocate(4).putInt(this.fileSize).array();
+		byte[] data = packetData.format("5", this.fileName, this.fileSize);
 
-		//ByteBuffer wrapped = ByteBuffer.wrap(fileSizeBuffer);
-		//int fileSizeValue = wrapped.getInt();
-
-		//System.out.format("fileSizeValue: %d", fileSizeValue);
-		
-		byte[] bufferRequest = new byte[1024];
-		System.arraycopy(commandBuffer, 0, bufferRequest, 0, commandLenght);
-		System.arraycopy(fileNameBuffer, 0, bufferRequest, commandLenght, fileNameLenght);
-		System.arraycopy(fileSizeBuffer, 0, bufferRequest, fileNameLenght + commandLenght, Integer.BYTES);
-
-		//System.out.format("bufferRequest: %s", new String(bufferRequest, StandardCharsets.UTF_8));
+		System.out.format("data: %s", new String(data, StandardCharsets.UTF_8));
 	        
-	    DatagramPacket request = new DatagramPacket(bufferRequest, bufferRequest.length, this.serverIp, this.serverPort);
+	    DatagramPacket request = new DatagramPacket(data, data.length, this.serverIp, this.serverPort);
 	    
-	    byte[] bufferResponse = new byte[1000];
+	    byte[] bufferResponse = new byte[1024];
         
         DatagramPacket response = new DatagramPacket(bufferResponse, bufferResponse.length);
 		
