@@ -24,7 +24,7 @@ public class UDPPeer {
             
             Scanner reader = new Scanner(System.in);
 
-            System.out.println("Nickname (1-64 characters): ");
+            System.out.print("Nickname (1-64 characters): ");
             String nickName = reader.nextLine();
             
             if (nickName.length() == 0 || nickName.length() > 64) {
@@ -37,18 +37,18 @@ public class UDPPeer {
             	throw new IOException("You can't be a Server");
             }
             
-            System.out.println("Do you allow this application to automatically open received URLs? (y/n)");
+            System.out.print("Do you allow this application to automatically open received URLs? (y/n): ");
             String allowUrls = reader.nextLine();
             
             if (allowUrls.isBlank()) {
             	allowUrls = "n";
             }
             
-            System.out.println("IP: ");
+            System.out.print("IP: ");
         	String dstIP = reader.nextLine();
         	InetAddress dstAddr = InetAddress.getByName(dstIP);
         	
-        	System.out.println("Porta: ");
+        	System.out.print("Porta: ");
         	int dstPort = Integer.parseInt(reader.nextLine());
             
             UDPSend sendThread = new UDPSend(dgramSocket, nickName, dstAddr, dstPort);

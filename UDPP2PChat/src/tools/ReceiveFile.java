@@ -31,22 +31,22 @@ public class ReceiveFile {
 	public ReceiveFile(DatagramSocket dgramSocket, String fileName, int fileSize, InetAddress clientIp, int clientPort) {
 		this.dgramSocket = dgramSocket;
 		this.clientIp = clientIp;
-		System.out.format("ReceiveFile - clientIp: %s", this.clientIp.toString());
+		//System.out.format("ReceiveFile - clientIp: %s", this.clientIp.toString());
 		
 		this.clientPort = clientPort;
-		System.out.format("ReceiveFile - clientPort: %d", this.clientPort);
+		//System.out.format("ReceiveFile - clientPort: %d", this.clientPort);
 		
 		this.fileName = fileName;
 
-		System.out.format("ReceiveFile - fileName: %s", this.fileName);
+		//System.out.format("ReceiveFile - fileName: %s", this.fileName);
 
 		this.fileSize = fileSize;
 		
-		System.out.format("ReceiveFile - fileSize: %d", this.fileSize);
+		//System.out.format("ReceiveFile - fileSize: %d", this.fileSize);
 	}
 	
 	public void startReceiveTask() throws IOException {
-		System.out.println("Enter startReceiveTask");
+		//System.out.println("Enter startReceiveTask");
 		
 //		byte[] bufferRequest = "Server ready".getBytes(StandardCharsets.UTF_8);
 //	        
@@ -59,10 +59,10 @@ public class ReceiveFile {
 		
 		byte[] checksum = new byte[40];
 		
-		System.out.println("ReceiveFile - Loop: Sending file content");
+		//System.out.println("ReceiveFile - Loop: Sending file content");
 		while (byteBuffer.hasRemaining()) {
-			System.out.println("Buffer offset: " + Integer.toString(byteBuffer.position()));
-			System.out.println("Buffer remaining: " + Integer.toString(byteBuffer.remaining()));
+			//System.out.println("Buffer offset: " + Integer.toString(byteBuffer.position()));
+			//System.out.println("Buffer remaining: " + Integer.toString(byteBuffer.remaining()));
 			
 			byte[] buffer = new byte[1024];
             
@@ -70,7 +70,7 @@ public class ReceiveFile {
             
 			this.dgramSocket.receive(dgramPacket);
 			
-			System.out.println("dgram length: " + Integer.toString(dgramPacket.getData().length));
+			//System.out.println("dgram length: " + Integer.toString(dgramPacket.getData().length));
 			
 			int dgramLength = dgramPacket.getData().length;
 			int bufferRemaining = byteBuffer.remaining();
@@ -82,15 +82,15 @@ public class ReceiveFile {
 			}
 		}
 		
-		System.out.println("ReceiveFile - Loop finished - File sent");
+		//System.out.println("ReceiveFile - Loop finished - File sent");
 		
 		byte[] buffer = new byte[1024];
         
         DatagramPacket dgramPacket = new DatagramPacket(buffer, buffer.length);
         
-        System.out.println("Waiting checksum packet");
+        //System.out.println("Waiting checksum packet");
 		this.dgramSocket.receive(dgramPacket);
-		System.out.println("Checksum packet arrived");
+		//System.out.println("Checksum packet arrived");
 		
 		PacketParser packetChecksumParser = new PacketParser();
 		packetChecksumParser.parseCheckSumPacket(dgramPacket);
@@ -99,18 +99,18 @@ public class ReceiveFile {
 		
 		if ("6".equals(packetChecksumParser.getPacketType())) {
 			checksumClient = packetChecksumParser.getPacketChecksum();
-			System.out.println("Receiving checksum packet");
+			//System.out.println("Receiving checksum packet");
 		}
 		
 		String checksumServer = generateChecksum(byteBuffer.array());
-		System.out.println("Current checksum calculated");
+		//System.out.println("Current checksum calculated");
 		
-		System.out.println(checksumServer + " == " + checksumClient);
+		//System.out.println(checksumServer + " == " + checksumClient);
 		
 		if (checksumServer.equals(checksumClient)) {
-			System.out.println("Successful Upload");
+			System.out.println("Transfer made successfully - Checksum verified");
 		} else {
-			System.out.println("Fail Upload");
+			System.out.println("Transfer failed - Checksum not matched");
 		}
 		
 		Path filePath = null;
@@ -119,13 +119,23 @@ public class ReceiveFile {
 			filePath = Paths.get("Uploads");
 			filePath = filePath.resolve(this.fileName);
 			
-			System.out.println("filePath: " + filePath.toString());
+			//System.out.println("filePath: " + filePath.toString());
 			
 			FileOutputStream fout = null;
 				
 			try {
 				fout = new FileOutputStream(filePath.toAbsolutePath().toFile());
 				fout.write(byteBuffer.array());
+				System.out.println("Successfully uploaded");
+				
+				PacketData packetData = new PacketData();
+				String message = "Successfully uploaded in " + filePath.toString();
+				byte[] data = packetData.format("1", "Server", message);
+	 	        
+	 	        DatagramPacket response = new DatagramPacket(data, data.length, this.clientIp, this.clientPort);
+	 	        
+	 			this.dgramSocket.send(response);
+	 			
 			} catch (FileNotFoundException e) {
 				System.out.println(e.getMessage());
 			} catch (IOException e) {
@@ -153,7 +163,7 @@ public class ReceiveFile {
                 hashtext = "0" + hashtext;
             }
             
-            System.out.println("checksum: " + hashtext);
+            //System.out.println("checksum: " + hashtext);
             
             return hashtext;
         } catch (NoSuchAlgorithmException e) {

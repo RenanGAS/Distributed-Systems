@@ -6,5 +6,7 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="/home/renangas/Documents/GitHub projects/Distributed-Systems/UDPP2PChat/resources/emoji-java-5.1.1.jar"/>
+	<classpathentry kind="lib" path="/home/renangas/Documents/GitHub projects/Distributed-Systems/UDPP2PChat/resources/json-20230618.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

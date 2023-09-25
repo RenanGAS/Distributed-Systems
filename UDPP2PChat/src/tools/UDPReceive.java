@@ -52,7 +52,7 @@ public class UDPReceive extends Thread {
 			
 			switch (packetType) {
 				case "1":
-					System.out.println("Normal message received");
+					//System.out.println("Normal message received");
 					System.out.format("%s: %s\n", nicknameSender, packetContent);
 					break;
 				case "2":
@@ -97,16 +97,16 @@ public class UDPReceive extends Thread {
 					System.out.print(EmojiParser.parseToUnicode(":grinning:"));
 					break;
 				case "sad":	
-					System.out.print("U+1F614");
+					System.out.print(EmojiParser.parseToUnicode(":slightly_frowning:"));
 					break;
 				case "swag":
-					System.out.print("U+1F60E");
+					System.out.print(EmojiParser.parseToUnicode(":sunglasses:"));
 					break;
 				case "ok":
-					System.out.print("U+1F44C");
+					System.out.print(EmojiParser.parseToUnicode(":thumbsup:"));
 					break;
 				case "amem":
-					System.out.print("U+1F64F");
+					System.out.print(EmojiParser.parseToUnicode(":pray:"));
 					break;
 				default:
 					throw new IllegalArgumentException("Unexpected value: " + emoji);
@@ -187,11 +187,11 @@ public class UDPReceive extends Thread {
 				
 				try {
 					if ("Server".equals(this.nickName)) {
-						System.out.println("handleMsgServer\n");
+						//System.out.println("handleMsgServer\n");
 						handleMsgServer(dgramPacket);
 						// Aceita mensagens do tipo 4 (Ping) e 5 (SEND)
 					} else {
-						System.out.println("handleMsgPeer\n");
+						//System.out.println("handleMsgPeer\n");
 						handleMsgPeer(dgramPacket);
 						// Aceita mensagens do tipo 1 (Mensagem simples), 2 (Emoji) e 3 (URL)
 					}

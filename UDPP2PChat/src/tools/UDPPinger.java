@@ -36,7 +36,7 @@ public class UDPPinger {
  	        
  	        return response;
         } catch (SocketTimeoutException e) {
-            throw new SocketTimeoutException("Time out");
+            throw new SocketTimeoutException(e.getMessage());
         } catch (SocketException e) {
             System.out.println(e.getMessage() + " - Pinger");
         } catch (IOException e) {

@@ -44,36 +44,36 @@ public class SendFile {
 	}
 	
 	public void startSendTask() throws IOException {
-		System.out.println("SendFile - startSendTask");
+		//System.out.println("SendFile - startSendTask");
 		
 		if (!isServerAlive()) {
 			throw new IOException("The server is down");
 		}
 		
-		System.out.println("SendFile - System is alive");
+		//System.out.println("SendFile - System is alive");
 		
 		ByteBuffer byteBuffer = readFile(this.fileSize);
 		
 		try {
 			stablishConnection();
-			System.out.println("Superou stablishConnection");
+			//System.out.println("Superou stablishConnection");
 		} catch (IndexOutOfBoundsException e) {
-			System.out.println("Exception");
+			//System.out.println(e.getMessage());
 			throw new IOException("fileName is too big");
 		} catch (IOException e) {
-			System.out.println("Exception");
+			//System.out.println(e.getMessage());
 			throw new IOException(e.getMessage());
 		}
 		
-		System.out.println("Connection stablished");
+		//System.out.println("Connection stablished");
 		
-		System.out.println("SendFile - Loop - Sending packets");
+		//System.out.println("SendFile - Loop - Sending packets");
 		
 		byteBuffer = byteBuffer.position(0);
 		
 		while (byteBuffer.hasRemaining()) {
-			System.out.println("Buffer offset: " + Integer.toString(byteBuffer.position()));
-			System.out.println("Buffer remaining: " + Integer.toString(byteBuffer.remaining()));
+			//System.out.println("Buffer offset: " + Integer.toString(byteBuffer.position()));
+			//System.out.println("Buffer remaining: " + Integer.toString(byteBuffer.remaining()));
 			
 			byte[] buffer = new byte[1024];
 			
@@ -87,7 +87,7 @@ public class SendFile {
 			
 		    this.dgramSocket.send(dgramPacket);
 		}
-		System.out.println("All packets sent");
+		//System.out.println("All packets sent");
 		
 		String checksumString = generateChecksum(byteBuffer.array());
 		
@@ -97,7 +97,7 @@ public class SendFile {
 		DatagramPacket finalPacket = new DatagramPacket(data, data.length, this.serverIp, this.serverPort);
 		
 		this.dgramSocket.send(finalPacket);
-		System.out.println("Final packet sent");
+		//System.out.println("Final packet sent");
 	}
 	
 	boolean isServerAlive() {
@@ -108,7 +108,7 @@ public class SendFile {
 			PacketParser packetParser = new PacketParser();
 			
 			packetParser.parsePacket(response);
-			System.out.format("%s: %s", packetParser.getPacketNickname(), packetParser.getPacketContent());
+			//System.out.format("%s: %s", packetParser.getPacketNickname(), packetParser.getPacketContent());
 		} catch (SocketTimeoutException e) {
 			return false;
 		} catch (IOException e) {
@@ -120,13 +120,13 @@ public class SendFile {
 	}
 	
 	void stablishConnection() throws IndexOutOfBoundsException, IOException {
-		System.out.println("SendFile - stablishConnection");
+		//System.out.println("SendFile - stablishConnection");
 		
 		PacketData packetData = new PacketData();
 		
 		byte[] data = packetData.format("5", this.fileName, this.fileSize);
 
-		System.out.format("data: %s", new String(data, StandardCharsets.UTF_8));
+		//System.out.format("data: %s", new String(data, StandardCharsets.UTF_8));
 	        
 	    DatagramPacket request = new DatagramPacket(data, data.length, this.serverIp, this.serverPort);
 	    
@@ -134,34 +134,38 @@ public class SendFile {
         
         DatagramPacket response = new DatagramPacket(bufferResponse, bufferResponse.length);
 		
-        System.out.println("Sending first packet");
+        //System.out.println("Sending first packet");
         
 	    this.dgramSocket.send(request);
 	    
-	    System.out.println("Depois de mandar");
+	    //System.out.println("Depois de mandar");
 	    
 	    //this.dgramSocket.receive(response);
 			
-	    System.out.println("First packet received");
+	    //System.out.println("First packet received");
 	}
 	
 	ByteBuffer readFile(int bufferLenght) throws IOException {
-		System.out.println("SendFile - readFile");
+		//System.out.println("SendFile - readFile");
 		
 		ByteBuffer byteBuffer = ByteBuffer.allocate(bufferLenght);
 		
 		FileInputStream fin = null;
 		
-		try {
-			fin = new FileInputStream(this.filePath.toAbsolutePath().toFile());
-			byteBuffer = byteBuffer.put(fin.readAllBytes()) ;
-		} catch (FileNotFoundException e) {
-			System.out.println(e.getMessage());
-		} catch (IOException e) {
-			System.out.println(e.getMessage());
-		} finally {
-			fin.close();
-		}
+		//try {
+		fin = new FileInputStream(this.filePath.toAbsolutePath().toFile());
+		byteBuffer = byteBuffer.put(fin.readAllBytes()) ;
+		//} catch (FileNotFoundException e) {
+			//System.out.println(e.getMessage());
+		//} catch (IOException e) {
+			//System.out.println(e.getMessage());
+		//} finally {
+			//try {
+		fin.close();
+			//} catch (IOException e) {
+				//System.out.println(e.getMessage());
+			//}
+		//}
 		
 		return byteBuffer;
 	}
@@ -180,7 +184,7 @@ public class SendFile {
                 hashtext = "0" + hashtext;
             }
             
-            System.out.println("checksum: " + hashtext);
+            //System.out.println("checksum: " + hashtext);
             
             return hashtext;
         } catch (NoSuchAlgorithmException e) {
