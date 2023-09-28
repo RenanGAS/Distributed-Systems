@@ -42,4 +42,4 @@ Exemplo de uso:
 	- 5:"textFile.txt"
 	- 5:"hikaru.png"
 	
-- `make initServer` (Caso não esteja repondendo requisições, execute de novo esta instância)
+- `make initServer` (Caso não esteja respondendo requisições, execute de novo esta instância)
