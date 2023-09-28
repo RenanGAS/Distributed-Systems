@@ -9,30 +9,29 @@ import java.util.regex.Pattern;
 public class MessageParser {
 	List<String> parsedMessage = null;
 	
-	// Exs. de Msgs:
-		// type:"content"
-	    // 1:"Eu vou ser o Rei dos Piratas!"
+	// Exs. de Msgs (type:"content"):
+	    // 1:"Bom dia"
 	    // 2:"happy swag ok"
 	    // 3:"https://google.com.br https://moodle.utfpr.edu.br"
-	    // 4:"salve servidor"
-		// 5:"arquivo.ext"
+	    // 4:"Olá Servidor"
+		// 5:"textFile.txt"
 	
 	public void parseMsg(String message) throws IOException {
 		Pattern pattern = Pattern.compile(":", Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(message);
 		
-		System.out.println("message: " + message);
+		//System.out.println("message: " + message);
 
 		if (matcher.find()) {
 			int indexSeparator = matcher.start();
 			List<String> parsedMsgStructure = new ArrayList<>();
 			
-			System.out.format("indexSeparador: %d\n", indexSeparator);
+			//System.out.format("indexSeparador: %d\n", indexSeparator);
 			
 			String type = message.substring(0, indexSeparator);
 			String content = message.substring(indexSeparator + 1);
 			
-			System.out.format("Tipo: %s\nConteudo: %s\n", type, content);
+			//System.out.format("Tipo: %s\nConteudo: %s\n", type, content);
 			
 			parsedMsgStructure.add(type);
 			parsedMsgStructure.add(content);
@@ -72,7 +71,7 @@ public class MessageParser {
 		
 		String parsedContentStructure = messageContent.substring(indexMsgStart + 1, indexMsgEnd);
 		
-		System.out.format("Conteudo: %s", parsedContentStructure);
+		//System.out.format("Conteudo: %s", parsedContentStructure);
 		
 		return parsedContentStructure;
 	} //parseMessageContent

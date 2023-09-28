@@ -46,19 +46,19 @@ public class UDPSend extends Thread {
 			
 			switch (messageType) {
 				case "1":
-					System.out.println("Normal message type\n");
+					//System.out.println("Normal message type\n");
 					sendPacket(messageType, messageContent);
 					break;
 				case "2":
-					System.out.println("Emoji message type\n");
+					//System.out.println("Emoji message type\n");
 					sendPacket(messageType, messageContent);
 					break;
 				case "3":
-					System.out.println("URL message type\n");
+					//System.out.println("URL message type\n");
 					sendPacket(messageType, messageContent);
 					break;
 				case "4":
-					System.out.println("Ping message type\n");
+					//System.out.println("Ping message type\n");
 					UDPPinger pinger = new UDPPinger();
 					DatagramPacket response = pinger.sendPing(this.nickName, messageContent, this.dstIp, this.dstPort);
 					
@@ -68,7 +68,7 @@ public class UDPSend extends Thread {
 					System.out.format("%s: %s\n", packetParser.getPacketNickname(), packetParser.getPacketContent());
 					break;
 				case "5":
-					System.out.println("Send message type\n");
+					//System.out.println("Send message type\n");
 					Path filePath = Paths.get("./resources/" + messageContent);
 					SendFile sendFile = new SendFile(this.nickName, filePath, dgramSocket, this.dstIp, this.dstPort);
 					sendFile.startSendTask();

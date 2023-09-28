@@ -17,8 +17,8 @@ public class PacketData {
 		dataBuffer.putInt(content.length());
 		dataBuffer.put(content.getBytes(StandardCharsets.UTF_8));
 		
-		System.out.println("Inside format\n");
-		System.out.println(String.valueOf("Array lenght: " + dataBuffer.array().length) + "\n");
+		//System.out.println("Inside format\n");
+		//System.out.println(String.valueOf("Array lenght: " + dataBuffer.array().length) + "\n");
 		
 		return dataBuffer.array();
 	}

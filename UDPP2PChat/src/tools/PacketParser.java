@@ -26,7 +26,7 @@ public class PacketParser {
 		try {
 			ByteBuffer packetBuffer = ByteBuffer.allocate(dgramPacket.getData().length);
 			
-			System.out.format("dgramPacket lenght: %d\n", dgramPacket.getData().length);
+			//System.out.format("dgramPacket lenght: %d\n", dgramPacket.getData().length);
 			
 			packetBuffer.put(dgramPacket.getData());
 			
@@ -36,11 +36,11 @@ public class PacketParser {
 			packetBuffer.get(typeBuffer, 0, 1);
 			packetType = new String(typeBuffer, StandardCharsets.UTF_8);
 			
-			System.out.format("packet type: %s\n", packetType);
+			//System.out.format("packet type: %s\n", packetType);
 			
 			int nicknameSize = packetBuffer.getInt(1);
 			
-			System.out.format("nickname size: %d\n", nicknameSize);
+			//System.out.format("nickname size: %d\n", nicknameSize);
 			
 			packetBuffer.position(5);
 			
@@ -48,17 +48,17 @@ public class PacketParser {
 			packetBuffer.get(nicknameBuffer, 0, nicknameSize);
 			packetNickname = new String(nicknameBuffer, StandardCharsets.UTF_8);
 			
-			System.out.format("nickname: %s\n", packetNickname);
+			//System.out.format("nickname: %s\n", packetNickname);
 			
 			int packetContentSize = packetBuffer.getInt();
 			
-			System.out.format("content size: %d\n", packetContentSize);
+			//System.out.format("content size: %d\n", packetContentSize);
 			
 			byte[] contentBuffer = new byte[packetContentSize];
 			packetBuffer.get(contentBuffer, 0, packetContentSize);
 			packetContent = new String(contentBuffer, StandardCharsets.UTF_8);
 			
-			System.out.format("content: %s\n", packetContent);
+			//System.out.format("content: %s\n", packetContent);
 		} catch (IllegalArgumentException  e) {
 			throw new IOException(e.getMessage());
 		} catch (BufferOverflowException  e) {
@@ -67,8 +67,8 @@ public class PacketParser {
 			throw new IOException(e.getMessage());
 		}
 		
-		System.out.format("packetType: %s, packetNickname: %s, packetContent: %s\n", 
-				packetType, packetNickname, packetContent);
+		//System.out.format("packetType: %s, packetNickname: %s, packetContent: %s\n", 
+				//packetType, packetNickname, packetContent);
 		
 		parsedPacketStructure.add(packetType);
 		parsedPacketStructure.add(packetNickname);
@@ -110,8 +110,8 @@ public class PacketParser {
 			throw new IOException(e.getMessage());
 		}
 		
-		System.out.format("packetType: %s, packetFileSize: %s, packetFileName: %s\n", 
-				packetType, String.valueOf(packetFileSize), packetFileName);
+		//System.out.format("packetType: %s, packetFileSize: %s, packetFileName: %s\n", 
+				//packetType, String.valueOf(packetFileSize), packetFileName);
 		
 		parsedSendPacketStructure.add(packetType);
 		parsedSendPacketStructure.add(String.valueOf(packetFileSize));
@@ -152,7 +152,7 @@ public class PacketParser {
 			throw new IOException(e.getMessage());
 		}
 		
-		System.out.format("packetType: %s, checksum: %s\n", packetType, packetChecksum);
+		//System.out.format("packetType: %s, checksum: %s\n", packetType, packetChecksum);
 		
 		parsedChecksumPacketStructure.add(packetType);
 		parsedChecksumPacketStructure.add(packetChecksum);
