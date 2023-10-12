@@ -1,0 +1,18 @@
+syntax = "proto2";
+
+package Movie;
+
+option java_multiple_files = true;
+option java_package = "output";
+option java_outer_classname = "MovieWrapper";
+
+message Movie {
+  optional string name = 1;
+  optional int32 id = 2;
+  optional int32 rating = 3;
+}
+
+message Actor {
+  optional string name = 1;
+  optional int32 age = 2;
+}
