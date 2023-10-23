@@ -10,7 +10,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
-public class MongoConnection { 
+public class TesteConexao {
     public static void main(String[] args) {
         String connectionString = "mongodb+srv://renansakaoki:123@mflix.hokkmkd.mongodb.net/?retryWrites=true&w=majority";
 
@@ -27,7 +27,7 @@ public class MongoConnection {
         try (MongoClient mongoClient = MongoClients.create(settings)) {
             try {
                 // Send a ping to confirm a successful connection
-                MongoDatabase database = mongoClient.getDatabase("admin");
+                MongoDatabase database = mongoClient.getDatabase("sample_mflix");
                 database.runCommand(new Document("ping", 1));
                 System.out.println("Pinged your deployment. You successfully connected to MongoDB!");
             } catch (MongoException e) {

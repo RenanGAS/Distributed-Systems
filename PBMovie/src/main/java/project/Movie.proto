@@ -3,16 +3,19 @@ syntax = "proto2";
 package Movie;
 
 option java_multiple_files = true;
-option java_package = "output";
+option java_package = "project.javaOut";
 option java_outer_classname = "MovieWrapper";
 
 message Movie {
-  optional string name = 1;
-  optional int32 id = 2;
-  optional int32 rating = 3;
+    required string title = 1;
+    required int32 year = 2;
+    required string released = 3;
+    required string poster = 4;
+    required string plot = 5;
+    required string fullplot = 6;
+    repeated string directors = 7;
+    repeated string cast = 8;
+    repeated string contries = 9;
+    repeated string genres = 10;
 }
 
-message Actor {
-  optional string name = 1;
-  optional int32 age = 2;
-}
