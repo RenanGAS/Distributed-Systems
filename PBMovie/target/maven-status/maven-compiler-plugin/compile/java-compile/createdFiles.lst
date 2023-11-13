@@ -1,0 +1,13 @@
+project/stream/ParserRequest.class
+project/stream/FormatResponse.class
+project/javaOut/MovieOrBuilder.class
+project/RetrieveMovie.class
+project/javaOut/Movie$1.class
+project/TesteConexao.class
+project/MongoConnection.class
+project/TCPServer.class
+project/javaOut/Movie.class
+project/javaOut/MovieWrapper.class
+project/threads/ReceiveThreadServer.class
+project/mongodb/CrudMovie.class
+project/javaOut/Movie$Builder.class

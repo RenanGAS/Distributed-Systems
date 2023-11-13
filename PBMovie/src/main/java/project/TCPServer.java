@@ -7,7 +7,7 @@ import java.net.Socket;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 
-import project.threads.ReceiveThread;
+import project.threads.ReceiveThreadServer;
 
 /**
  * TCPServer: Servidor para responder requisições do TCPClient fazendo consultas ao servidor MongoDB 
@@ -16,13 +16,12 @@ public class TCPServer {
 	
 	//static Logger logger = LoggerFactory.getLogger(TCPServer.class);
 
-    public static void main(String args[]) {
+    public static void main(String args[]) throws IOException {
+        int serverPort = 6666; // porta do servidor
+        ServerSocket serverSocket = new ServerSocket(serverPort);
+
+        /* cria um socket e mapeia a porta para aguardar conexao */
         try {
-            int serverPort = 6666; // porta do servidor
-
-            /* cria um socket e mapeia a porta para aguardar conexao */
-            ServerSocket serverSocket = new ServerSocket(serverPort);
-
             while (true) {
             	//logger.info("Waiting connections...");
                 System.out.println("Aguardando conexao...");
@@ -34,15 +33,16 @@ public class TCPServer {
                 System.out.println("Conexao estabelecida!");
 
                 /* cria um thread para receber mensagens */
-                ReceiveThread receiveThread = new ReceiveThread(clientSocket);
+                ReceiveThreadServer receiveThread = new ReceiveThreadServer(clientSocket);
 
                 receiveThread.start();
             } //while
-
         } catch (IOException e) {
         	//logger.warn("IOException: " + e.getMessage());
             System.out.println("IOException: " + e.getMessage());
-        } //catch
+        } finally {
+            serverSocket.close();
+        }
     } //main
 } //class
 

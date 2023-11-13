@@ -5,6 +5,9 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.ServerApi;
 import com.mongodb.ServerApiVersion;
 import project.javaOut.Movie;
+import project.javaOut.MovieOrBuilder;
+import project.javaOut.MovieWrapper;
+
 import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -16,10 +19,20 @@ import java.util.Arrays;
 import java.util.Date;
 import java.time.Instant;
 import org.bson.types.ObjectId;
+import org.bson.BsonDocument;
 import org.bson.Document;
+import org.bson.json.JsonObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.model.UpdateOptions;
+import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.UpdateResult;
+import org.bson.conversions.Bson;
+import java.util.Map;
+import org.bson.BsonValue;
+import com.mongodb.client.model.Filters;
 
 /**
  * CrudMovie: reponsável pela construção das requisições para o MongoDB
@@ -75,7 +88,8 @@ public class CrudMovie {
 
         String uri = "mongodb+srv://renansakaoki:123@mflix.hokkmkd.mongodb.net/?retryWrites=true&w=majority";
         
-        try (MongoClient mongoClient = MongoClients.create(uri)) {
+        try {
+            MongoClient mongoClient = MongoClients.create(uri);
             MongoDatabase database = mongoClient.getDatabase("sample_mflix");
             MongoCollection<Document> collection = database.getCollection("movies");
 
@@ -91,7 +105,9 @@ public class CrudMovie {
                     .append("year", year)
                     .append("countries", countriesList));
 
-            return "Movie created sucessfully";
+            return "Movie created successfully";
+        } catch (MongoException e) {
+            return e.getMessage();
         }
     }
 
@@ -117,18 +133,78 @@ public class CrudMovie {
             MongoDatabase database = mongoClient.getDatabase("sample_mflix");
             MongoCollection<Document> collection = database.getCollection("movies");
 
-            Document document = collection.find(eq("title", movieName))
-                .first();
-            if (document == null) {
-                throw new MongoException("Movie not found");
+            Document document = collection.find(eq("title", movieName)).first();
+
+            Movie movie;
+
+            try {
+                movie = documentToMovie(document);
+            } catch (MongoException me) {
+                throw new MongoException(me.getMessage());
+            } catch (NullPointerException npe) {
+                throw new MongoException(npe.getMessage());
             }
 
-            Movie movie = documentToMovie(document);
-
             return movie;
-        }
+        } 
     }
 
+    /**
+     * Edita um filme 
+     *
+     * @param movieName Nome do filme
+     * @return Objeto movie
+     */
+    public String editMovie(JsonObject movieJson) {
+        String connectionString = "mongodb+srv://renansakaoki:123@mflix.hokkmkd.mongodb.net/?retryWrites=true&w=majority";
+
+        ServerApi serverApi = ServerApi.builder()
+                .version(ServerApiVersion.V1)
+                .build();
+
+        MongoClientSettings settings = MongoClientSettings.builder()
+                .applyConnectionString(new ConnectionString(connectionString))
+                .serverApi(serverApi)
+                .build();
+
+        try (MongoClient mongoClient = MongoClients.create(settings)) {
+            MongoDatabase database = mongoClient.getDatabase("sample_mflix");
+            MongoCollection<Document> collection = database.getCollection("movies");
+
+            BsonDocument movieBson = movieJson.toBsonDocument();
+
+            Document query = new Document().append("title", movieBson.get("title"));
+
+            List<Bson> updates = new ArrayList<>();
+
+            for (Map.Entry<String, BsonValue> attribute: movieBson.entrySet()) {
+                updates.add(Updates.set(attribute.getKey(), attribute.getValue()));
+            }
+
+            Bson combinedUpdates = Updates.combine(updates);
+            
+            try {
+                UpdateResult result = collection.updateOne(query, combinedUpdates);
+
+                // Prints the number of updated documents and the upserted document ID, if an upsert was performed
+                System.out.println("Modified document count: " + result.getModifiedCount());
+                System.out.println("Upserted id: " + result.getUpsertedId());
+            } catch (MongoException me) {
+                return me.getMessage();
+            }
+        } catch (MongoException me) {
+            return me.getMessage();
+        }
+        
+        return "Movie edited successfully";
+    }
+
+    /**
+     * Transforma um Document do MongoDB em Movie ProtoBuffer
+     *
+     * @param document Documento MongoDB
+     * @return Movie ProtoBuffer
+     */
     public Movie documentToMovie(Document document) {
         Movie.Builder movie = Movie.newBuilder();
 
@@ -206,7 +282,7 @@ public class CrudMovie {
      * @param actorName Nome do ator
      * @return Lista de movies 
      */
-    public List<Movie> listByActor(String actorName) {
+    public List<Movie> listByActor(String actorName) throws MongoException {
         String connectionString = "mongodb+srv://renansakaoki:123@mflix.hokkmkd.mongodb.net/?retryWrites=true&w=majority";
 
         ServerApi serverApi = ServerApi.builder()
@@ -224,19 +300,22 @@ public class CrudMovie {
             MongoDatabase database = mongoClient.getDatabase("sample_mflix");
             MongoCollection<Document> collection = database.getCollection("movies");
 
-            FindIterable<Document> movies = collection.find(eq("cast", actorName));
+            Bson filter = Filters.in("cast", actorName);
+            FindIterable<Document> movies = collection.find(filter).limit(10);
 
-            if (movies == null) {
-               throw new MongoException("Not found movies with this actor \"" + actorName + "\""); 
-            }
-
-            for (Document docMovie : movies) {
-                Movie movie = documentToMovie(docMovie); 
-                listMovies.add(movie);
+            try {
+                for (Document docMovie : movies) {
+                    Movie movie = documentToMovie(docMovie); 
+                    listMovies.add(movie);
+                }
+            } catch (MongoException me) {
+               throw new MongoException(me.getMessage()); 
+            } catch (NullPointerException npe) {
+               throw new MongoException(npe.getMessage());
             }
        }
 
-        return listMovies;
+       return listMovies;
     }
 
     /**
