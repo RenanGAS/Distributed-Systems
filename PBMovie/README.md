@@ -110,3 +110,73 @@ Ordem de prioridade de programação:
         return jsonMovie;
 
 Tentar fazer uma operação de leitura pra ver se a conexão tá de boa
+
+Falta terminar as operações de listagem (por ator e categoria) e a operação de
+edição.
+
+Depois tem que escolher qual parte (Cliente ou Servidor) vai ser passada para Kotlin,
+e consertar o bug de envio repetido de requisições quando fecha o Cliente/Servidor.
+
+Fiz a listagem, agora vou fazer a edição, pra depois testar a listagem e fazer a listagem por categoria e testar a edição.
+
+Na tarefa de edição, o usuário deverá dar o nome do filme. Em seguida, serão apresentados os campos. Se o usuário digitar algo, o 
+campo é incluído no corpo da requisição, para se fazer o update de seu valor. Caso seja pressionado apenas enter, não faz nada.
+Precisa-se só de uma requisição do Cliente para fazer isso.
+
+Terminei de fazer a lógica da operação de Update Cliente-Servidor, falta fazer o update funcionar no CrudMongo e consertar o formEditMovie.
+
+Consertar formEditMovie, testar listagem e editar, implementar Cliente ou Servidor em Kotlin.
+
+Deixar a edição de lado e tentar passar o Cliente ou Servidor pra Kotlin.
+
+Passar o Cliente para Kotlin: determinar as funções necessárias para o Cliente e para o Servidor. Ver quais são usadas em
+ambos e quais não. Refatorar o código antes ou depois.
+
+Cliente:
+
+- Format:
+
+    - formatCreate, formatRead, formatUpdate, formatDelete, formatListByActor 
+
+- Parser:
+
+    - parseResponseCreateDelete, parseResponseRead, parseResponseReadFail, parseResponseListByActor, parseResponseListByActorFail
+
+Servidor:
+
+- Format:
+
+    - formatResponseCreateDelete, formatResponseRead, formatResponseCreateDelete, formatResponseListByActor, formatResponseListByActorFail
+
+- Parser:
+
+    - parseCreate, parseReadDeleteList, parseUpdate, 
+
+Fazer Format e Parser separados para o Cliente e Servidor, e Refatorar as funções.
+
+Fazer um Receive separado para o Servidor e Cliente.
+
+Depois disso, passar o Cliente para Kotlin.
+
+Arquivos do Cliente:
+
+- TCPClient -> Done
+- SendThread -> Done
+- ReceiveThreadClient -> Done
+- FormatRequest -> Done
+- ParserResponse -> Done
+
+Ver como integrar Kotling no Maven para compilação e execução.
+
+Testar integração e execução com Kotlin.
+
+Integração feita com sucesso.
+
+Agora vou tentar consertar a requisição que é mandada 4 vezes. Depois vou implementar a listagem por categoria, e ver se consigo fazer o editar colocando
+os campos como opcionais. Depois é só testar tudo e enviar.
+
+Não consigo ler um filme que criei, listagem com problema. Ver agora sobre a edição.
+
+Limite de 10 filmes na listagem
+
+Deixar listagem por categoria pra prox, fazer o Editar, testar e ir pro Overwolf.
