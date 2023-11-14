@@ -1,5 +1,6 @@
 package project.mongodb;
 
+import com.google.protobuf.Descriptors;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.ServerApi;
@@ -33,6 +34,8 @@ import org.bson.conversions.Bson;
 import java.util.Map;
 import org.bson.BsonValue;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.FindOneAndUpdateOptions;
+import com.mongodb.client.model.ReturnDocument;
 
 /**
  * CrudMovie: reponsável pela construção das requisições para o MongoDB
@@ -155,7 +158,7 @@ public class CrudMovie {
      * @param movieName Nome do filme
      * @return Objeto movie
      */
-    public String editMovie(JsonObject movieJson) {
+    public Movie editMovie(Movie movie) throws MongoException {
         String connectionString = "mongodb+srv://renansakaoki:123@mflix.hokkmkd.mongodb.net/?retryWrites=true&w=majority";
 
         ServerApi serverApi = ServerApi.builder()
@@ -167,36 +170,35 @@ public class CrudMovie {
                 .serverApi(serverApi)
                 .build();
 
+        Document result = null;
+
         try (MongoClient mongoClient = MongoClients.create(settings)) {
             MongoDatabase database = mongoClient.getDatabase("sample_mflix");
             MongoCollection<Document> collection = database.getCollection("movies");
 
-            BsonDocument movieBson = movieJson.toBsonDocument();
-
-            Document query = new Document().append("title", movieBson.get("title"));
-
             List<Bson> updates = new ArrayList<>();
 
-            for (Map.Entry<String, BsonValue> attribute: movieBson.entrySet()) {
-                updates.add(Updates.set(attribute.getKey(), attribute.getValue()));
+            for (Map.Entry<Descriptors.FieldDescriptor, Object> attribute: movie.getAllFields().entrySet()) {
+                updates.add(Updates.set(attribute.getKey().getName(), attribute.getValue()));
+                System.out.println("Nome campo: " + attribute.getKey().getName() + " valor: " + attribute.getValue());
             }
 
             Bson combinedUpdates = Updates.combine(updates);
             
-            try {
-                UpdateResult result = collection.updateOne(query, combinedUpdates);
+            result = collection.findOneAndUpdate(eq("title", movie.getTitle()), combinedUpdates, new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER));
+        } 
 
-                // Prints the number of updated documents and the upserted document ID, if an upsert was performed
-                System.out.println("Modified document count: " + result.getModifiedCount());
-                System.out.println("Upserted id: " + result.getUpsertedId());
-            } catch (MongoException me) {
-                return me.getMessage();
-            }
+        Movie movieUpdated = null;
+
+        try {
+            movieUpdated = documentToMovie(result);
         } catch (MongoException me) {
-            return me.getMessage();
+            throw new MongoException(me.getMessage());
+        } catch (NullPointerException npe) {
+            throw new MongoException(npe.getMessage());
         }
         
-        return "Movie edited successfully";
+        return movieUpdated;
     }
 
     /**
@@ -210,39 +212,57 @@ public class CrudMovie {
 
         movie.setTitle(document.get("title").toString());
 
-        int year = Integer.valueOf(document.get("year").toString()); 
-        movie.setYear(year);
-
-        movie.setReleased(document.get("released").toString());
-
-        movie.setPoster(document.get("poster").toString());
-
-        movie.setPlot(document.get("plot").toString());           
-
-        movie.setFullplot(document.get("fullplot").toString());           
-
-        List<String> listDirectors = document.getList("directors", String.class);
-
-        for(String director : listDirectors) {
-            movie.addDirectors(director);
+        if (!document.get("year").equals(null)) {
+            int year = Integer.valueOf(document.get("year").toString()); 
+            movie.setYear(year);
         }
 
-        List<String> listActors = document.getList("cast", String.class);
-
-        for(String actor : listActors) {
-            movie.addCast(actor);
+        if (!document.get("released").equals(null)) {
+            movie.setReleased(document.get("released").toString());
         }
 
-        List<String> listCountries = document.getList("countries", String.class);
-
-        for(String country : listCountries) {
-            movie.addContries(country);
+        if (!document.get("poster").equals(null)) {
+            movie.setPoster(document.get("poster").toString());
         }
 
-        List<String> listGenres = document.getList("genres", String.class);
+        if (!document.get("plot").equals(null)) {
+            movie.setPlot(document.get("plot").toString());           
+        }
 
-        for(String genre : listGenres) {
-            movie.addGenres(genre);
+        if (!document.get("fullplot").equals(null)) {
+            movie.setFullplot(document.get("fullplot").toString());           
+        }
+
+        if (!document.get("directors").equals(null)) {
+            List<String> listDirectors = document.getList("directors", String.class);
+
+            for(String director : listDirectors) {
+                movie.addDirectors(director);
+            }
+        }
+
+        if (!document.get("cast").equals(null)) {
+            List<String> listActors = document.getList("cast", String.class);
+
+            for(String actor : listActors) {
+                movie.addCast(actor);
+            }
+        }
+
+        if (!document.get("countries").equals(null)) {
+            List<String> listCountries = document.getList("countries", String.class);
+
+            for(String country : listCountries) {
+                movie.addContries(country);
+            }
+        }
+
+        if (!document.get("genres").equals(null)) {
+            List<String> listGenres = document.getList("genres", String.class);
+
+            for(String genre : listGenres) {
+                movie.addGenres(genre);
+            }
         }
 
         return movie.build();

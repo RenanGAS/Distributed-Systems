@@ -60,21 +60,22 @@ public class FormatRequest {
     /**
      * Formata requisição 'update'
      *
-     * @param movieJson JsonObject do filme 
-     * @return Byte array composto do código da requisição, tamanho da string Json e string Json 
+     * @param movieUpdates Movie com campos a serem atualizados 
+     * @return Byte array composto do código da requisição, tamanho do filme e objeto proto  
      */
-    fun update(movieJson: JsonObject): ByteArray {
-        var movieJsonString: String = movieJson.getJson()
-        var movieJsonStringSize: Int = movieJsonString.length
+    fun update(movieUpdates: Movie): ByteArray {
+        var movieUpdatesBytes: ByteArray = movieUpdates.toByteArray()
 
-        var capacity: Int = 8 + movieJsonStringSize 
+        var movieUpdatesByteSize: Int = movieUpdatesBytes.size
+
+        var capacity: Int = 8 + movieUpdatesByteSize 
 
         var data: ByteBuffer = ByteBuffer.allocate(capacity)
 
         // Código para operação 'update': 3
         data.putInt(3)
-        data.putInt(movieJsonStringSize)
-        data.put(movieJsonString.toByteArray(StandardCharsets.UTF_8))
+        data.putInt(movieUpdatesByteSize)
+        data.put(movieUpdatesBytes)
 
         return data.array()
     }

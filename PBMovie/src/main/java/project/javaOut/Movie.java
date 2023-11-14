@@ -104,7 +104,7 @@ private static final long serialVersionUID = 0L;
   public static final int YEAR_FIELD_NUMBER = 2;
   private int year_ = 0;
   /**
-   * <code>required int32 year = 2;</code>
+   * <code>optional int32 year = 2;</code>
    * @return Whether the year field is set.
    */
   @java.lang.Override
@@ -112,7 +112,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <code>required int32 year = 2;</code>
+   * <code>optional int32 year = 2;</code>
    * @return The year.
    */
   @java.lang.Override
@@ -124,7 +124,7 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object released_ = "";
   /**
-   * <code>required string released = 3;</code>
+   * <code>optional string released = 3;</code>
    * @return Whether the released field is set.
    */
   @java.lang.Override
@@ -132,7 +132,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000004) != 0);
   }
   /**
-   * <code>required string released = 3;</code>
+   * <code>optional string released = 3;</code>
    * @return The released.
    */
   @java.lang.Override
@@ -151,7 +151,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>required string released = 3;</code>
+   * <code>optional string released = 3;</code>
    * @return The bytes for released.
    */
   @java.lang.Override
@@ -173,7 +173,7 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object poster_ = "";
   /**
-   * <code>required string poster = 4;</code>
+   * <code>optional string poster = 4;</code>
    * @return Whether the poster field is set.
    */
   @java.lang.Override
@@ -181,7 +181,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000008) != 0);
   }
   /**
-   * <code>required string poster = 4;</code>
+   * <code>optional string poster = 4;</code>
    * @return The poster.
    */
   @java.lang.Override
@@ -200,7 +200,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>required string poster = 4;</code>
+   * <code>optional string poster = 4;</code>
    * @return The bytes for poster.
    */
   @java.lang.Override
@@ -222,7 +222,7 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object plot_ = "";
   /**
-   * <code>required string plot = 5;</code>
+   * <code>optional string plot = 5;</code>
    * @return Whether the plot field is set.
    */
   @java.lang.Override
@@ -230,7 +230,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000010) != 0);
   }
   /**
-   * <code>required string plot = 5;</code>
+   * <code>optional string plot = 5;</code>
    * @return The plot.
    */
   @java.lang.Override
@@ -249,7 +249,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>required string plot = 5;</code>
+   * <code>optional string plot = 5;</code>
    * @return The bytes for plot.
    */
   @java.lang.Override
@@ -271,7 +271,7 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object fullplot_ = "";
   /**
-   * <code>required string fullplot = 6;</code>
+   * <code>optional string fullplot = 6;</code>
    * @return Whether the fullplot field is set.
    */
   @java.lang.Override
@@ -279,7 +279,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000020) != 0);
   }
   /**
-   * <code>required string fullplot = 6;</code>
+   * <code>optional string fullplot = 6;</code>
    * @return The fullplot.
    */
   @java.lang.Override
@@ -298,7 +298,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>required string fullplot = 6;</code>
+   * <code>optional string fullplot = 6;</code>
    * @return The bytes for fullplot.
    */
   @java.lang.Override
@@ -472,26 +472,6 @@ private static final long serialVersionUID = 0L;
     if (isInitialized == 0) return false;
 
     if (!hasTitle()) {
-      memoizedIsInitialized = 0;
-      return false;
-    }
-    if (!hasYear()) {
-      memoizedIsInitialized = 0;
-      return false;
-    }
-    if (!hasReleased()) {
-      memoizedIsInitialized = 0;
-      return false;
-    }
-    if (!hasPoster()) {
-      memoizedIsInitialized = 0;
-      return false;
-    }
-    if (!hasPlot()) {
-      memoizedIsInitialized = 0;
-      return false;
-    }
-    if (!hasFullplot()) {
       memoizedIsInitialized = 0;
       return false;
     }
@@ -1040,21 +1020,6 @@ private static final long serialVersionUID = 0L;
       if (!hasTitle()) {
         return false;
       }
-      if (!hasYear()) {
-        return false;
-      }
-      if (!hasReleased()) {
-        return false;
-      }
-      if (!hasPoster()) {
-        return false;
-      }
-      if (!hasPlot()) {
-        return false;
-      }
-      if (!hasFullplot()) {
-        return false;
-      }
       return true;
     }
 
@@ -1227,7 +1192,7 @@ private static final long serialVersionUID = 0L;
 
     private int year_ ;
     /**
-     * <code>required int32 year = 2;</code>
+     * <code>optional int32 year = 2;</code>
      * @return Whether the year field is set.
      */
     @java.lang.Override
@@ -1235,7 +1200,7 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>required int32 year = 2;</code>
+     * <code>optional int32 year = 2;</code>
      * @return The year.
      */
     @java.lang.Override
@@ -1243,7 +1208,7 @@ private static final long serialVersionUID = 0L;
       return year_;
     }
     /**
-     * <code>required int32 year = 2;</code>
+     * <code>optional int32 year = 2;</code>
      * @param value The year to set.
      * @return This builder for chaining.
      */
@@ -1255,7 +1220,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>required int32 year = 2;</code>
+     * <code>optional int32 year = 2;</code>
      * @return This builder for chaining.
      */
     public Builder clearYear() {
@@ -1267,14 +1232,14 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object released_ = "";
     /**
-     * <code>required string released = 3;</code>
+     * <code>optional string released = 3;</code>
      * @return Whether the released field is set.
      */
     public boolean hasReleased() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>required string released = 3;</code>
+     * <code>optional string released = 3;</code>
      * @return The released.
      */
     public java.lang.String getReleased() {
@@ -1292,7 +1257,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>required string released = 3;</code>
+     * <code>optional string released = 3;</code>
      * @return The bytes for released.
      */
     public com.google.protobuf.ByteString
@@ -1309,7 +1274,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>required string released = 3;</code>
+     * <code>optional string released = 3;</code>
      * @param value The released to set.
      * @return This builder for chaining.
      */
@@ -1322,7 +1287,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>required string released = 3;</code>
+     * <code>optional string released = 3;</code>
      * @return This builder for chaining.
      */
     public Builder clearReleased() {
@@ -1332,7 +1297,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>required string released = 3;</code>
+     * <code>optional string released = 3;</code>
      * @param value The bytes for released to set.
      * @return This builder for chaining.
      */
@@ -1347,14 +1312,14 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object poster_ = "";
     /**
-     * <code>required string poster = 4;</code>
+     * <code>optional string poster = 4;</code>
      * @return Whether the poster field is set.
      */
     public boolean hasPoster() {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <code>required string poster = 4;</code>
+     * <code>optional string poster = 4;</code>
      * @return The poster.
      */
     public java.lang.String getPoster() {
@@ -1372,7 +1337,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>required string poster = 4;</code>
+     * <code>optional string poster = 4;</code>
      * @return The bytes for poster.
      */
     public com.google.protobuf.ByteString
@@ -1389,7 +1354,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>required string poster = 4;</code>
+     * <code>optional string poster = 4;</code>
      * @param value The poster to set.
      * @return This builder for chaining.
      */
@@ -1402,7 +1367,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>required string poster = 4;</code>
+     * <code>optional string poster = 4;</code>
      * @return This builder for chaining.
      */
     public Builder clearPoster() {
@@ -1412,7 +1377,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>required string poster = 4;</code>
+     * <code>optional string poster = 4;</code>
      * @param value The bytes for poster to set.
      * @return This builder for chaining.
      */
@@ -1427,14 +1392,14 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object plot_ = "";
     /**
-     * <code>required string plot = 5;</code>
+     * <code>optional string plot = 5;</code>
      * @return Whether the plot field is set.
      */
     public boolean hasPlot() {
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
-     * <code>required string plot = 5;</code>
+     * <code>optional string plot = 5;</code>
      * @return The plot.
      */
     public java.lang.String getPlot() {
@@ -1452,7 +1417,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>required string plot = 5;</code>
+     * <code>optional string plot = 5;</code>
      * @return The bytes for plot.
      */
     public com.google.protobuf.ByteString
@@ -1469,7 +1434,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>required string plot = 5;</code>
+     * <code>optional string plot = 5;</code>
      * @param value The plot to set.
      * @return This builder for chaining.
      */
@@ -1482,7 +1447,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>required string plot = 5;</code>
+     * <code>optional string plot = 5;</code>
      * @return This builder for chaining.
      */
     public Builder clearPlot() {
@@ -1492,7 +1457,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>required string plot = 5;</code>
+     * <code>optional string plot = 5;</code>
      * @param value The bytes for plot to set.
      * @return This builder for chaining.
      */
@@ -1507,14 +1472,14 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object fullplot_ = "";
     /**
-     * <code>required string fullplot = 6;</code>
+     * <code>optional string fullplot = 6;</code>
      * @return Whether the fullplot field is set.
      */
     public boolean hasFullplot() {
       return ((bitField0_ & 0x00000020) != 0);
     }
     /**
-     * <code>required string fullplot = 6;</code>
+     * <code>optional string fullplot = 6;</code>
      * @return The fullplot.
      */
     public java.lang.String getFullplot() {
@@ -1532,7 +1497,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>required string fullplot = 6;</code>
+     * <code>optional string fullplot = 6;</code>
      * @return The bytes for fullplot.
      */
     public com.google.protobuf.ByteString
@@ -1549,7 +1514,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>required string fullplot = 6;</code>
+     * <code>optional string fullplot = 6;</code>
      * @param value The fullplot to set.
      * @return This builder for chaining.
      */
@@ -1562,7 +1527,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>required string fullplot = 6;</code>
+     * <code>optional string fullplot = 6;</code>
      * @return This builder for chaining.
      */
     public Builder clearFullplot() {
@@ -1572,7 +1537,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>required string fullplot = 6;</code>
+     * <code>optional string fullplot = 6;</code>
      * @param value The bytes for fullplot to set.
      * @return This builder for chaining.
      */

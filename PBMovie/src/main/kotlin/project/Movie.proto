@@ -13,9 +13,9 @@ message Movie {
     optional string poster = 4;
     optional string plot = 5;
     optional string fullplot = 6;
-    optional repeated string directors = 7;
-    optional repeated string cast = 8;
-    optional repeated string contries = 9;
-    optional repeated string genres = 10;
+    repeated string directors = 7;
+    repeated string cast = 8;
+    repeated string contries = 9;
+    repeated string genres = 10;
 }
 

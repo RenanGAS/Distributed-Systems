@@ -25,79 +25,79 @@ public interface MovieOrBuilder extends
       getTitleBytes();
 
   /**
-   * <code>required int32 year = 2;</code>
+   * <code>optional int32 year = 2;</code>
    * @return Whether the year field is set.
    */
   boolean hasYear();
   /**
-   * <code>required int32 year = 2;</code>
+   * <code>optional int32 year = 2;</code>
    * @return The year.
    */
   int getYear();
 
   /**
-   * <code>required string released = 3;</code>
+   * <code>optional string released = 3;</code>
    * @return Whether the released field is set.
    */
   boolean hasReleased();
   /**
-   * <code>required string released = 3;</code>
+   * <code>optional string released = 3;</code>
    * @return The released.
    */
   java.lang.String getReleased();
   /**
-   * <code>required string released = 3;</code>
+   * <code>optional string released = 3;</code>
    * @return The bytes for released.
    */
   com.google.protobuf.ByteString
       getReleasedBytes();
 
   /**
-   * <code>required string poster = 4;</code>
+   * <code>optional string poster = 4;</code>
    * @return Whether the poster field is set.
    */
   boolean hasPoster();
   /**
-   * <code>required string poster = 4;</code>
+   * <code>optional string poster = 4;</code>
    * @return The poster.
    */
   java.lang.String getPoster();
   /**
-   * <code>required string poster = 4;</code>
+   * <code>optional string poster = 4;</code>
    * @return The bytes for poster.
    */
   com.google.protobuf.ByteString
       getPosterBytes();
 
   /**
-   * <code>required string plot = 5;</code>
+   * <code>optional string plot = 5;</code>
    * @return Whether the plot field is set.
    */
   boolean hasPlot();
   /**
-   * <code>required string plot = 5;</code>
+   * <code>optional string plot = 5;</code>
    * @return The plot.
    */
   java.lang.String getPlot();
   /**
-   * <code>required string plot = 5;</code>
+   * <code>optional string plot = 5;</code>
    * @return The bytes for plot.
    */
   com.google.protobuf.ByteString
       getPlotBytes();
 
   /**
-   * <code>required string fullplot = 6;</code>
+   * <code>optional string fullplot = 6;</code>
    * @return Whether the fullplot field is set.
    */
   boolean hasFullplot();
   /**
-   * <code>required string fullplot = 6;</code>
+   * <code>optional string fullplot = 6;</code>
    * @return The fullplot.
    */
   java.lang.String getFullplot();
   /**
-   * <code>required string fullplot = 6;</code>
+   * <code>optional string fullplot = 6;</code>
    * @return The bytes for fullplot.
    */
   com.google.protobuf.ByteString

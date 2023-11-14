@@ -80,19 +80,19 @@ public class ParserRequest {
      * @param request bytes da requisição
      * @return Objeto Json dos campos a serem editados do filme
      */
-    public JsonObject update(byte[] request) throws InvalidProtocolBufferException {
-        ByteBuffer requestBuffer = ByteBuffer.allocate(request.length);
-        requestBuffer.put(request);
-
-        int lenghtJsonString = requestBuffer.getInt(4);
-
-        byte[] movieJsonStringBytes = new byte[lenghtJsonString];
-        requestBuffer.get(8, movieJsonStringBytes);
-
-        String movieJsonString = new String(movieJsonStringBytes, StandardCharsets.UTF_8);
-
-        JsonObject movieJson = new JsonObject(movieJsonString);
-        return movieJson;
-    }
+//    public Movie update(byte[] request) throws InvalidProtocolBufferException {
+//        ByteBuffer requestBuffer = ByteBuffer.allocate(request.length);
+//        requestBuffer.put(request);
+//
+//        int lenghtJsonString = requestBuffer.getInt(4);
+//
+//        byte[] movieJsonStringBytes = new byte[lenghtJsonString];
+//        requestBuffer.get(8, movieJsonStringBytes);
+//
+//        String movieJsonString = new String(movieJsonStringBytes, StandardCharsets.UTF_8);
+//
+//        JsonObject movieJson = new JsonObject(movieJsonString);
+//        return movieJson;
+//    }
 }
 

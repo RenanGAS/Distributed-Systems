@@ -63,9 +63,8 @@ public class ReceiveThreadClient(socketC: Socket): Thread() {
 
             }
             203 -> {
-                var successResponseUpdate: String = parserResp.message(code, response) 
-                System.out.println(successResponseUpdate)
- 
+                var movieUpdate: Movie = parserResp.read(response) 
+                System.out.println(movieUpdate.toString()) 
             }
             403 -> {
                 var failResponseUpdate: String = parserResp.message(code, response) 

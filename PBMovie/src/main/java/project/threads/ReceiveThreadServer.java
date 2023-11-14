@@ -90,11 +90,11 @@ public class ReceiveThreadServer extends Thread {
                 break;
             case 3:
                 // update 
-                JsonObject jsonMovie = this.parserReq.update(request);
+                Movie movie = this.parserReq.create(request);
 
                 try {
-                    String responseUpdate = this.crud.editMovie(jsonMovie);
-                    byte[] responseUpdateFormatted = this.formatResp.standard(203, responseUpdate.getBytes(StandardCharsets.UTF_8));
+                    Movie movieResponseUpdate = this.crud.editMovie(movie);
+                    byte[] responseUpdateFormatted = this.formatResp.standard(203, movieResponseUpdate.toByteArray());
                     this.output.write(responseUpdateFormatted, 0, responseUpdateFormatted.length);
                 } catch (MongoException e) {
                     byte[] responseUpdateFormatted = this.formatResp.standard(403, e.getMessage().getBytes(StandardCharsets.UTF_8));

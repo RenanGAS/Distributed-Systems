@@ -29,9 +29,9 @@ public final class MovieWrapper {
   static {
     java.lang.String[] descriptorData = {
       "\n!src/main/java/project/Movie.proto\022\005Mov" +
-      "ie\"\251\001\n\005Movie\022\r\n\005title\030\001 \002(\t\022\014\n\004year\030\002 \002(" +
-      "\005\022\020\n\010released\030\003 \002(\t\022\016\n\006poster\030\004 \002(\t\022\014\n\004p" +
-      "lot\030\005 \002(\t\022\020\n\010fullplot\030\006 \002(\t\022\021\n\tdirectors" +
+      "ie\"\251\001\n\005Movie\022\r\n\005title\030\001 \002(\t\022\014\n\004year\030\002 \001(" +
+      "\005\022\020\n\010released\030\003 \001(\t\022\016\n\006poster\030\004 \001(\t\022\014\n\004p" +
+      "lot\030\005 \001(\t\022\020\n\010fullplot\030\006 \001(\t\022\021\n\tdirectors" +
       "\030\007 \003(\t\022\014\n\004cast\030\010 \003(\t\022\020\n\010contries\030\t \003(\t\022\016" +
       "\n\006genres\030\n \003(\tB!\n\017project.javaOutB\014Movie" +
       "WrapperP\001"

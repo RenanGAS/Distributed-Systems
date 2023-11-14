@@ -180,3 +180,15 @@ Não consigo ler um filme que criei, listagem com problema. Ver agora sobre a ed
 Limite de 10 filmes na listagem
 
 Deixar listagem por categoria pra prox, fazer o Editar, testar e ir pro Overwolf.
+
+Ver o porque do flow do crud pra coisas novas não funcionar.
+
+Para o editar:
+
+- Pegar Movie semi preenchido com os valores para atualizar, enviar para o servidor.
+
+- Servidor identifica o filme a ser editado e itera sobre os campos existentes para fazer a edição.
+
+- Recebe-se o filme editado ou uma mensagem de falha.
+
+Editar feito e testado. Agora fazer a listagem por categoria e ver porque do flow pra um filme recém cadastrdado não funcionar.

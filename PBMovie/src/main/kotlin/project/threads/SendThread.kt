@@ -48,17 +48,12 @@ public class SendThread(socketC: Socket): Thread() {
                 output.write(readRequest, 0, readRequest.size)
             }
             "update" -> {
-                // Fazer formulário que nem do create. Conforme vai preenchendo, pegar só os pares chave-valor
-                // que o usuário manda um valor, e ir montando o JsonObject disso. No fim, mandar uma requisição
-                // com o código, tamanho do Json e bytes do Json. Ver se tem funções para bytes e para decodificar
-                // bytes Json.
-                // Parece que para serialização e deserizalição mexemos com string e o tipo de json.
-                // Então formamos o json, mandamos para string e mandamos para bytes.
-                // No outro lado pegamos os bytes mandamos para string e construimos o json.
+                var movieUpdates: Movie = formEditMovie(scanner)
 
-                // var movieJson: JsonObject = formEditMovie(scanner)
-                // var updateRequest: ByteArray = formatReq.update(movieJson)
-                // output.write(updateRequest, 0, updateRequest.size)
+                println(movieUpdates.toString())
+
+                var updateRequest: ByteArray = formatReq.update(movieUpdates)
+                output.write(updateRequest, 0, updateRequest.size)
             }
             "delete" -> {
                 System.out.print("Nome do filme: ")
@@ -200,6 +195,117 @@ public class SendThread(socketC: Socket): Thread() {
         return movie.build()
     }
 
+    fun formEditMovie(scanner: Scanner): Movie {
+        var movie: Movie.Builder = Movie.newBuilder()
+
+        System.out.println("\nTitle: ")
+        var title: String = scanner.nextLine() 
+        movie.setTitle(title)
+
+        println(movie.toString())
+
+        System.out.println("\nYear: ")
+        try {
+            var yearString: String = scanner.nextLine()
+            if (yearString.isNotBlank()) {
+                var year: Int = Integer.valueOf(yearString) 
+                movie.setYear(year)
+            }
+        } catch (nfe: NumberFormatException) {
+            throw IOException("Expected a number")
+        }
+
+        System.out.println("\nDate: ")
+        var released: String = scanner.nextLine() 
+        if (released.isNotBlank()) {
+            movie.setReleased(released)
+        }
+
+        System.out.println("\nURL Poster: ")
+        var poster: String = scanner.nextLine() 
+        if (poster.isNotBlank()) {
+            movie.setPoster(poster)
+        }
+
+        System.out.println("\nPlot: ")
+        var plot: String = scanner.nextLine() 
+        if (plot.isNotBlank()) {
+            movie.setPlot(plot)           
+        }
+
+        System.out.println("\nFull plot: ")
+        var fullplot: String = scanner.nextLine() 
+        if (fullplot.isNotBlank()) {
+            movie.setFullplot(fullplot)           
+        }
+
+        System.out.println("Directors' names:\n")
+        System.out.println("(Press key 'q' for quit)\n")
+        
+        var countDirectors = 1
+        while(true) {
+            System.out.format("\nDirector %d: ", countDirectors)
+            var directorName: String = scanner.nextLine() 
+
+            if ("q".equals(directorName) || directorName.isBlank()) {
+                break
+            }
+
+            movie.addDirectors(directorName)
+            countDirectors++
+        } 
+
+        System.out.println("Actors' names:\n")
+        System.out.println("(Press key 'q' for quit)\n")
+
+        var countCast = 1
+        while(true) {
+            System.out.format("\nActor %d: ", countCast)
+            var actorName: String = scanner.nextLine() 
+
+            if ("q".equals(actorName) || actorName.isBlank()) {
+                break
+            }
+
+            movie.addCast(actorName)
+            countCast++
+        }
+
+        System.out.println("Countries' names:\n")
+        System.out.println("(Press key 'q' for quit)\n")
+
+        var countCountry = 1
+        while(true) {
+            System.out.format("\nCountry %d: ", countCountry)
+            var countryName: String = scanner.nextLine() 
+
+            if ("q".equals(countryName) || countryName.isBlank()) {
+                break
+            }
+
+            movie.addContries(countryName)
+            countCountry++
+        }
+
+        System.out.println("Genres' names:\n")
+        System.out.println("(Press key 'q' for quit)\n")
+
+        var countGenre = 1
+        while(true) {
+            System.out.format("\nGenre %d: ", countGenre)
+            var genreName: String = scanner.nextLine() 
+
+            if ("q".equals(genreName) || genreName.isBlank()) {
+                break
+            }
+
+            movie.addGenres(genreName)
+            countGenre++
+        }
+
+        return movie.build()
+    }
+
     public override fun run() {
         var scanner = Scanner(System.`in`) // ler mensagens via teclado
 
@@ -213,7 +319,13 @@ public class SendThread(socketC: Socket): Thread() {
                     break
                 }
 
-                handleCodeOperation(buffer, scanner)
+                try {
+                    handleCodeOperation(buffer, scanner)
+                } catch (ioe: IOException) {
+                    println("ERROR: " + ioe.message)
+                } catch (e: Exception) {
+                    println("ERROR: " + e.message)
+                }
             }
 
             System.out.println("SendThread exitted\n")
