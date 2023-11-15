@@ -3,46 +3,41 @@ package project;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-
 import project.threads.ReceiveThreadServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * TCPServer: Servidor para responder requisições do TCPClient fazendo consultas ao servidor MongoDB 
+ * TCPServer: Servidor para responder requisições do TCPClient realizando operações sobre o servidor MongoDB 
  */
 public class TCPServer {
 	
-	//static Logger logger = LoggerFactory.getLogger(TCPServer.class);
+	static Logger logger = LoggerFactory.getLogger(TCPServer.class);
 
     public static void main(String args[]) throws IOException {
-        int serverPort = 6666; // porta do servidor
+        int serverPort = 6666; 
         ServerSocket serverSocket = new ServerSocket(serverPort);
 
-        /* cria um socket e mapeia a porta para aguardar conexao */
         try {
             while (true) {
-            	//logger.info("Waiting connections...");
-                System.out.println("Aguardando conexao...");
+            	logger.info("Waiting connections...");
+                //System.out.println("Waiting connections...");
 
-                /* aguarda conexoes */
                 Socket clientSocket = serverSocket.accept();
                 
-                //logger.info("Established connection!");
-                System.out.println("Conexao estabelecida!");
+                logger.info("Established connection!");
+                //System.out.println("Established connection!");
 
-                /* cria um thread para receber mensagens */
                 ReceiveThreadServer receiveThread = new ReceiveThreadServer(clientSocket);
 
                 receiveThread.start();
-            } //while
+            } 
         } catch (IOException e) {
-        	//logger.warn("IOException: " + e.getMessage());
-            System.out.println("IOException: " + e.getMessage());
+        	logger.warn("IOException: " + e.getMessage());
+            //System.out.println("\nIOException: " + e.getMessage() + "\n");
         } finally {
             serverSocket.close();
         }
-    } //main
-} //class
+    } 
+} 
 

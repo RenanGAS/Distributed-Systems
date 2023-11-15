@@ -3,9 +3,6 @@
 /home/renangas/Documents/Github Projects/Distributed-Systems/PBMovie/src/main/java/project/TCPServer.java
 /home/renangas/Documents/Github Projects/Distributed-Systems/PBMovie/src/main/java/project/stream/ParserRequest.java
 /home/renangas/Documents/Github Projects/Distributed-Systems/PBMovie/src/main/java/project/threads/ReceiveThreadServer.java
-/home/renangas/Documents/Github Projects/Distributed-Systems/PBMovie/src/main/java/project/mongodb/RetrieveMovie.java
-/home/renangas/Documents/Github Projects/Distributed-Systems/PBMovie/src/main/java/project/TesteConexao.java
 /home/renangas/Documents/Github Projects/Distributed-Systems/PBMovie/src/main/java/project/javaOut/MovieWrapper.java
-/home/renangas/Documents/Github Projects/Distributed-Systems/PBMovie/src/main/java/project/mongodb/MongoConnection.java
 /home/renangas/Documents/Github Projects/Distributed-Systems/PBMovie/src/main/java/project/javaOut/Movie.java
 /home/renangas/Documents/Github Projects/Distributed-Systems/PBMovie/src/main/java/project/mongodb/CrudMovie.java

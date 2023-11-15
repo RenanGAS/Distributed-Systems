@@ -1,29 +1,26 @@
 package project.stream
 
 import org.bson.json.JsonObject
-
 import java.io.IOException
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
-
 import project.javaOut.Movie
 
 /**
- * Format: Formata uma requisição conforme seu tipo para ser enviada ao servidor. 
+ * FormatRequest: Formata uma requisição conforme seu tipo para ser enviada ao ReceiveThreadServer. 
  */
 public class FormatRequest {
 
     /**
-     * Formata requisição 'create'
+     * Formata requisição 'create': código | tamanhoMovie | objetoMovie
      *
      * @param movie Objeto Movie
-     * @return Byte array composto do código da requisição e do tamanho e objeto proto
+     * @return Byte array com os bytes da requisição
      */
     fun create(movie: Movie): ByteArray {
         var movieBytes: ByteArray = movie.toByteArray()
 
         var movieSize: Int = movieBytes.size
-
         var capacity: Int = 8 + movieSize 
 
         var data: ByteBuffer = ByteBuffer.allocate(capacity)
@@ -37,10 +34,10 @@ public class FormatRequest {
     }
 
     /**
-     * Formata requisição 'read'
+     * Formata requisição 'read': código | tamanhoNomeMovie | nomeMovie
      *
-     * @param movieName Nome do filme procurado
-     * @return Byte array composto do código da requisição e do tamanho e string do nome do filme
+     * @param movieName Nome do Movie procurado
+     * @return Byte array com os bytes da requisição
      */
     fun read(movieName: String): ByteArray {
         var movieNameSize: Int = movieName.length
@@ -58,10 +55,10 @@ public class FormatRequest {
     }
 
     /**
-     * Formata requisição 'update'
+     * Formata requisição 'update': código | tamanhoMovieEditado | movieEditado
      *
      * @param movieUpdates Movie com campos a serem atualizados 
-     * @return Byte array composto do código da requisição, tamanho do filme e objeto proto  
+     * @return Byte array com os bytes da requisição  
      */
     fun update(movieUpdates: Movie): ByteArray {
         var movieUpdatesBytes: ByteArray = movieUpdates.toByteArray()
@@ -80,12 +77,11 @@ public class FormatRequest {
         return data.array()
     }
 
-
     /**
-     * Formata requisição 'delete'
+     * Formata requisição 'delete': código | tamanhoNomeMovieDeletar | nomeMovieDeletar
      *
-     * @param movieName Nome do filme a ser deletado
-     * @return Byte array composto do código da requisição e do tamanho e string do nome do filme
+     * @param movieName Nome do Movie a ser deletado
+     * @return Byte array com os bytes da requisição
      */
     fun delete(movieName: String): ByteArray {
         var movieNameSize: Int = movieName.length
@@ -103,10 +99,11 @@ public class FormatRequest {
     }
 
      /**
-     * Formata requisição 'listByAttribute'
+     * Formata as requisições 'listByActor' e 'listByGenre': código | tamanhoValorAtributo | valorAtributo
      *
+     * @param code Código da requisição (5 ou 6)
      * @param attValue Valor do atributo para busca 
-     * @return Byte array composto do código da requisição e do tamanho e string do parâmetro de busca 
+     * @return Byte array com os bytes da requisição 
      */
     fun listByAttribute(code: Int, attValue: String): ByteArray {
         var attValueSize: Int = attValue.length
@@ -115,13 +112,11 @@ public class FormatRequest {
 
         var data: ByteBuffer = ByteBuffer.allocate(capacity)
 
-        // Código da operação
         data.putInt(code)
         data.putInt(attValueSize)
         data.put(attValue.toByteArray(StandardCharsets.UTF_8))
 
         return data.array()
     }
-
 }
 

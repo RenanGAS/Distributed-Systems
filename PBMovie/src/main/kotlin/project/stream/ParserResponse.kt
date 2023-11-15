@@ -7,14 +7,14 @@ import project.javaOut.Movie;
 import org.bson.json.JsonObject;
 
 /**
- * ParserResponse: Faz o parse de uma requisição de acordo com seu tipo, para o acesso ao seu conteúdo.
+ * ParserResponse: Faz o parse das respostas do servidor de acordo com seu tipo
  */
 public class ParserResponse {
 
     /**
      * Parse do código da resposta
      *
-     * @param request bytes da resposta
+     * @param request Bytes da resposta
      * @return Valor inteiro do código
      */
     fun getCode(request: ByteArray): Int {
@@ -41,9 +41,7 @@ public class ParserResponse {
         responseBuffer.get(8, messageBytes);
         var message: String = String(messageBytes, StandardCharsets.UTF_8);
 
-        //System.out.format("message: %s\n", message);
-
-        if (code % 100 == 2) {
+        if (code / 100 == 2) {
             return "SUCCESS: " + message; 
         }
 
@@ -51,10 +49,10 @@ public class ParserResponse {
     }
 
     /**
-     * Parse da resposta 'read' 
+     * Parse da resposta da operação 'read' 
      *
-     * @param response bytes da response 
-     * @return Objeto Movie ou mensagem de falha 
+     * @param response Bytes da resposta 
+     * @return Objeto Movie 
      */
     fun read(response: ByteArray): Movie {
         var responseBuffer: ByteBuffer = ByteBuffer.allocate(response.size);
@@ -70,7 +68,7 @@ public class ParserResponse {
     }
 
     /**
-     * Parse da resposta 'listByAttribute'
+     * Parse da resposta da operação 'listByActor' e 'listByGenre'
      *
      * @param response Bytes da resposta
      * @return Lista de filmes
@@ -83,12 +81,12 @@ public class ParserResponse {
 
         var listLenght: Int = responseBuffer.getInt(4) - 1;
 
-        var listMovies: MutableList<Movie> = mutableListOf() // Ver se tem que definir o tamanho da lista
+        var listMovies: MutableList<Movie> = mutableListOf() 
 
-        responseBuffer.position(8); // ver se isso funciona pro getInt() abaixo
+        responseBuffer.position(8); 
 
         for (i in 0..listLenght) {
-            var movieLenght: Int = responseBuffer.getInt(); // ver se move ponteiro
+            var movieLenght: Int = responseBuffer.getInt();
             var movieBytes: ByteArray = ByteArray(movieLenght);
             responseBuffer.get(movieBytes, 0, movieLenght);
             var movie: Movie = Movie.parseFrom(movieBytes);

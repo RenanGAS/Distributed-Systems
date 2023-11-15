@@ -1,26 +1,21 @@
 package project.stream;
 
 import java.util.List;
-
-import org.bson.json.JsonObject;
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-
 import project.javaOut.Movie;
 
 /**
- * FormatResponse: Formata respostas para o Cliente. 
+ * FormatResponse: Formata respostas para ReceiveThreadClient 
  */
 public class FormatResponse {
 
      /**
-     * Formata resposta padrão: código + bytes
+     * Formata modelo de resposta padrão: código | bytes
      *
      * @param code Código de sucesso (20X) ou falha (40X) 
      * @param content Bytes da resposta 
-     * @return Byte array composto do código da reposta e do tamanho e conteúdo da mensagem
+     * @return Byte array com os bytes da resposta
      */
     public byte[] standard(int code, byte[] content) throws IOException {
         int contentSize = content.length;
@@ -37,10 +32,11 @@ public class FormatResponse {
     }
 
     /**
-     * Formata resposta de 'listByAttribute'
+     * Formata resposta de 'listByActor' e 'listByGenre': código | tamanhoLista | [(tamanhoMovie | Movie), ...]
      *
+     * @param code Código da resposta da operação (205 ou 206)
      * @param listMovies Lista de filmes
-     * @return Resposta do formato codigo + numMovies + [(lenghtMovie + Move) + ...]
+     * @return Byte array com os bytes da resposta
      */
     public byte[] listByAttribute(int code, List<Movie> listMovies) {
         int listSize = listMovies.size();

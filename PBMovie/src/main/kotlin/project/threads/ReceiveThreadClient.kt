@@ -1,9 +1,5 @@
 package project.threads
 
-/**
- * ReceiveThreadClient: Thread para receber respostas do Servidor 
- */
-
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.EOFException
@@ -12,15 +8,16 @@ import java.net.Socket
 import java.nio.charset.StandardCharsets
 import kotlin.collections.List
 import org.bson.json.JsonObject
-
 import com.mongodb.MongoException
-
-//import org.slf4j.Logger
-//import org.slf4j.LoggerFactory
 import project.stream.ParserResponse
 import project.javaOut.Movie
 import project.mongodb.CrudMovie
+//import org.slf4j.Logger
+//import org.slf4j.LoggerFactory
 
+/**
+ * ReceiveThreadClient: Thread para receber respostas de ReceiveThreadServer 
+ */
 public class ReceiveThreadClient(socketC: Socket): Thread() {
     val input: DataInputStream
     val output: DataOutputStream
@@ -45,79 +42,77 @@ public class ReceiveThreadClient(socketC: Socket): Thread() {
         when (code) {
             201 -> {
                 var successResponseCreate: String = parserResp.message(code, response) 
-                System.out.println(successResponseCreate)
- 
+                System.out.println("\n" + successResponseCreate + "\n")
             }
             401 -> {
                 var failResponseCreate: String = parserResp.message(code, response) 
-                System.out.println(failResponseCreate)
-
+                System.out.println("\n" + failResponseCreate + "\n")
             }
             202 -> {
                 var movieRead: Movie = parserResp.read(response) 
-                System.out.println(movieRead.toString()) 
+                System.out.println("\n" + movieRead.toString()) 
             }
             402 -> {
                 var failResponseRead: String = parserResp.message(code, response) 
-                System.out.println(failResponseRead)
-
+                System.out.println("\n" + failResponseRead + "\n")
             }
             203 -> {
                 var movieUpdate: Movie = parserResp.read(response) 
-                System.out.println(movieUpdate.toString()) 
+                System.out.println("\n" + movieUpdate.toString()) 
             }
             403 -> {
                 var failResponseUpdate: String = parserResp.message(code, response) 
-                System.out.println(failResponseUpdate)
-
+                System.out.println("\n" + failResponseUpdate + "\n")
             }
             204 -> {
                 var successResponseDelete: String = parserResp.message(code, response) 
-                System.out.println(successResponseDelete) 
+                System.out.println("\n" + successResponseDelete + "\n") 
             }
             404 -> {
                 var failResponseDelete: String = parserResp.message(code, response) 
-                System.out.println(failResponseDelete)
-
+                System.out.println("\n" + failResponseDelete + "\n")
             }
             205 -> {
                 var listMoviesByActor: List<Movie> = parserResp.listByAttribute(response) 
                 
-                System.out.println("\nLista de filmes do ator:")
+                System.out.println("\nMovies of this actor:")
 
                for (i in 0..listMoviesByActor.size - 1) { 
-                    System.out.println("\nFilme " + i.toString() + " ---------------------------------------------\n")
+                    System.out.println("\n-------------------- Movie " + (i + 1).toString() + " --------------------\n")
                     System.out.println(listMoviesByActor.get(i).toString()) 
                 }
             }
             405 -> {
                 var failResponseListByActor: String = parserResp.message(code, response) 
-                System.out.println(failResponseListByActor)
-
+                System.out.println("\n" + failResponseListByActor + "\n")
             }
             206 -> {
                 var listMoviesByGenre: List<Movie> = parserResp.listByAttribute(response) 
                 
-                System.out.println("\nLista de filmes do gênero:")
+                System.out.println("\nMovies of this genre:")
 
                for (i in 0..listMoviesByGenre.size - 1) { 
-                    System.out.println("\nFilme " + i.toString() + " ---------------------------------------------\n")
+                    System.out.println("\n-------------------- Movie " + (i + 1).toString() + " --------------------\n")
                     System.out.println(listMoviesByGenre.get(i).toString()) 
                 }
             }
             406 -> {
                 var failResponseListByGenre: String = parserResp.message(code, response) 
-                System.out.println(failResponseListByGenre)
+                System.out.println("\n" + failResponseListByGenre + "\n")
+            }
+            500 -> {
+                var failResponseServer: String = parserResp.message(code, response) 
+                System.out.println("\n" + failResponseServer + "\n")
             }
             else -> {
-                System.out.println("ERROR: Unexpected response code\n")
+                System.out.println("\nERROR: Unexpected response from the server\n")
             }
         }
     }
 
     public override fun run() {
         try {
-            var buffer: ByteArray = ByteArray(12024) // Limite de 10 filmes na listagem
+            var buffer: ByteArray = ByteArray(12024) 
 
             while (true) {
                 input.read(buffer) 
@@ -127,16 +122,15 @@ public class ReceiveThreadClient(socketC: Socket): Thread() {
                     handleCodeResponse(code, buffer)
                 } catch (ioe: IOException) {
                     //logger.warn("IOException: " + ioe.getMessage())
-                    //output.writeUTF("ERROR: " + ioe.getMessage())
-                    System.out.println(ioe.message)
+                    System.out.println("ERROR: " + ioe.message + "\n")
                 }
             }
         } catch (eofe: EOFException) {
         	//logger.warn("IOException: " + eofe.message)
-            System.out.println("EOFException: " + eofe.message)
+            System.out.println("\nEOFException: " + eofe.message + "\n")
         } catch (ioe: IOException) {
         	//logger.warn("IOException: " + ioe.message)
-            System.out.println("IOException: " + ioe.message)
+            System.out.println("\nIOException: " + ioe.message + "\n")
         } finally {
             try {
                 input.close()
@@ -144,11 +138,11 @@ public class ReceiveThreadClient(socketC: Socket): Thread() {
                 socket.close()
             } catch (ioe: IOException) {
             	//logger.warn("IOException: " + ioe.message)
-                System.err.println("IOException: " + ioe.message)
+                System.err.println("\nIOException: " + ioe.message + "\n")
             }
         }
         //logger.info("ReceiveThread finished")
-        System.out.println("ReceiveThreadClient finished.")
-    } //run
-} //class
+        System.out.println("\nReceiveThreadClient finished\n")
+    } 
+} 
 
