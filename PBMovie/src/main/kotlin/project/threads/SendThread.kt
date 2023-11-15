@@ -64,13 +64,16 @@ public class SendThread(socketC: Socket): Thread() {
             "listByActor" -> {
                 System.out.print("Nome do ator: ")
                 var actorName: String = scanner.nextLine()
-                var listByActorRequest: ByteArray = formatReq.listByActor(actorName)
+                var listByActorRequest: ByteArray = formatReq.listByAttribute(5, actorName)
                 output.write(listByActorRequest, 0, listByActorRequest.size)
-
-                // Fazer isso em ReceiveThreadClient
-                // var listByActorResponse: ByteArray = ByteArray(1024) 
-                // input.read(listByActorResponse)
             }
+            "listByGenre" -> {
+                System.out.print("Nome do Gênero: ")
+                var genreName: String = scanner.nextLine()
+                var listByGenreRequest: ByteArray = formatReq.listByAttribute(6, genreName)
+                output.write(listByGenreRequest, 0, listByGenreRequest.size)
+            }
+
             else -> {
                 System.out.println("ERROR: Unsupported operation\n")
             }

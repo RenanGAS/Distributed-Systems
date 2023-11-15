@@ -212,28 +212,28 @@ public class CrudMovie {
 
         movie.setTitle(document.get("title").toString());
 
-        if (!document.get("year").equals(null)) {
+        if (document.get("year") != null) {
             int year = Integer.valueOf(document.get("year").toString()); 
             movie.setYear(year);
         }
 
-        if (!document.get("released").equals(null)) {
+        if (document.get("released") != null) {
             movie.setReleased(document.get("released").toString());
         }
 
-        if (!document.get("poster").equals(null)) {
+        if (document.get("poster") != null) {
             movie.setPoster(document.get("poster").toString());
         }
 
-        if (!document.get("plot").equals(null)) {
+        if (document.get("plot") != null) {
             movie.setPlot(document.get("plot").toString());           
         }
 
-        if (!document.get("fullplot").equals(null)) {
+        if (document.get("fullplot") != null) {
             movie.setFullplot(document.get("fullplot").toString());           
         }
 
-        if (!document.get("directors").equals(null)) {
+        if (document.get("directors") != null) {
             List<String> listDirectors = document.getList("directors", String.class);
 
             for(String director : listDirectors) {
@@ -241,7 +241,7 @@ public class CrudMovie {
             }
         }
 
-        if (!document.get("cast").equals(null)) {
+        if (document.get("cast") != null) {
             List<String> listActors = document.getList("cast", String.class);
 
             for(String actor : listActors) {
@@ -249,7 +249,7 @@ public class CrudMovie {
             }
         }
 
-        if (!document.get("countries").equals(null)) {
+        if (document.get("countries") != null) {
             List<String> listCountries = document.getList("countries", String.class);
 
             for(String country : listCountries) {
@@ -257,7 +257,7 @@ public class CrudMovie {
             }
         }
 
-        if (!document.get("genres").equals(null)) {
+        if (document.get("genres") != null) {
             List<String> listGenres = document.getList("genres", String.class);
 
             for(String genre : listGenres) {
@@ -337,6 +337,49 @@ public class CrudMovie {
 
        return listMovies;
     }
+
+    /**
+     * Lista filmes de um gênero pelo seu nome
+     *
+     * @param genreName Nome do gênero
+     * @return Lista de gêneros 
+     */
+    public List<Movie> listByGenre(String genreName) throws MongoException {
+        String connectionString = "mongodb+srv://renansakaoki:123@mflix.hokkmkd.mongodb.net/?retryWrites=true&w=majority";
+
+        ServerApi serverApi = ServerApi.builder()
+                .version(ServerApiVersion.V1)
+                .build();
+
+        MongoClientSettings settings = MongoClientSettings.builder()
+                .applyConnectionString(new ConnectionString(connectionString))
+                .serverApi(serverApi)
+                .build();
+
+        List<Movie> listMovies = new ArrayList<>();
+
+        try (MongoClient mongoClient = MongoClients.create(settings)) {
+            MongoDatabase database = mongoClient.getDatabase("sample_mflix");
+            MongoCollection<Document> collection = database.getCollection("movies");
+
+            Bson filter = Filters.in("genres", genreName);
+            FindIterable<Document> movies = collection.find(filter).limit(10);
+
+            try {
+                for (Document docMovie : movies) {
+                    Movie movie = documentToMovie(docMovie); 
+                    listMovies.add(movie);
+                }
+            } catch (MongoException me) {
+               throw new MongoException(me.getMessage()); 
+            } catch (NullPointerException npe) {
+               throw new MongoException(npe.getMessage());
+            }
+       }
+
+       return listMovies;
+    }
+
 
     /**
      * Pinga o servidor MongoDB

@@ -103,24 +103,25 @@ public class FormatRequest {
     }
 
      /**
-     * Formata requisição 'listByActor'
+     * Formata requisição 'listByAttribute'
      *
-     * @param actorName Nome do ator alvo para busca
-     * @return Byte array composto do código da requisição e do tamanho e string do nome do ator
+     * @param attValue Valor do atributo para busca 
+     * @return Byte array composto do código da requisição e do tamanho e string do parâmetro de busca 
      */
-    fun listByActor(actorName: String): ByteArray {
-        var actorNameSize: Int = actorName.length
+    fun listByAttribute(code: Int, attValue: String): ByteArray {
+        var attValueSize: Int = attValue.length
 
-        var capacity: Int = 8 + actorNameSize 
+        var capacity: Int = 8 + attValueSize 
 
         var data: ByteBuffer = ByteBuffer.allocate(capacity)
 
-        // Código para operação 'listByActor': 5
-        data.putInt(5)
-        data.putInt(actorNameSize)
-        data.put(actorName.toByteArray(StandardCharsets.UTF_8))
+        // Código da operação
+        data.putInt(code)
+        data.putInt(attValueSize)
+        data.put(attValue.toByteArray(StandardCharsets.UTF_8))
 
         return data.array()
     }
+
 }
 

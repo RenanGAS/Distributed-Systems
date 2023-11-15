@@ -37,12 +37,12 @@ public class FormatResponse {
     }
 
     /**
-     * Formata resposta de 'listByActor'
+     * Formata resposta de 'listByAttribute'
      *
      * @param listMovies Lista de filmes
      * @return Resposta do formato codigo + numMovies + [(lenghtMovie + Move) + ...]
      */
-    public byte[] listByActor(List<Movie> listMovies) {
+    public byte[] listByAttribute(int code, List<Movie> listMovies) {
         int listSize = listMovies.size();
 
         int capacity = 8; 
@@ -58,7 +58,7 @@ public class FormatResponse {
         
         ByteBuffer data = ByteBuffer.allocate(capacity);
 
-        data.putInt(205);
+        data.putInt(code);
         data.putInt(listSize);
 
         for(Movie movie : listMovies) {

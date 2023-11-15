@@ -81,7 +81,7 @@ public class ReceiveThreadClient(socketC: Socket): Thread() {
 
             }
             205 -> {
-                var listMoviesByActor: List<Movie> = parserResp.listByActor(response) 
+                var listMoviesByActor: List<Movie> = parserResp.listByAttribute(response) 
                 
                 System.out.println("\nLista de filmes do ator:")
 
@@ -89,19 +89,31 @@ public class ReceiveThreadClient(socketC: Socket): Thread() {
                     System.out.println("\nFilme " + i.toString() + " ---------------------------------------------\n")
                     System.out.println(listMoviesByActor.get(i).toString()) 
                 }
-
             }
             405 -> {
                 var failResponseListByActor: String = parserResp.message(code, response) 
                 System.out.println(failResponseListByActor)
 
             }
+            206 -> {
+                var listMoviesByGenre: List<Movie> = parserResp.listByAttribute(response) 
+                
+                System.out.println("\nLista de filmes do gênero:")
+
+               for (i in 0..listMoviesByGenre.size - 1) { 
+                    System.out.println("\nFilme " + i.toString() + " ---------------------------------------------\n")
+                    System.out.println(listMoviesByGenre.get(i).toString()) 
+                }
+            }
+            406 -> {
+                var failResponseListByGenre: String = parserResp.message(code, response) 
+                System.out.println(failResponseListByGenre)
+            }
             else -> {
                 System.out.println("ERROR: Unexpected response code\n")
             }
         }
     }
-
 
     public override fun run() {
         try {

@@ -70,12 +70,12 @@ public class ParserResponse {
     }
 
     /**
-     * Parse da resposta 'listByActor'
+     * Parse da resposta 'listByAttribute'
      *
      * @param response Bytes da resposta
      * @return Lista de filmes
      */
-    fun listByActor(response: ByteArray): List<Movie> {
+    fun listByAttribute(response: ByteArray): List<Movie> {
         var responseBuffer: ByteBuffer = ByteBuffer.allocate(response.size);
         responseBuffer.put(response);
 

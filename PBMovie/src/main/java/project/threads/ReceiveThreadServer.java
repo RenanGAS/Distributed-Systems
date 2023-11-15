@@ -122,7 +122,7 @@ public class ReceiveThreadServer extends Thread {
 
                 try {
                     List<Movie> responseListByActor = this.crud.listByActor(actorName);
-                    byte[] responseListByActorFormatted = this.formatResp.listByActor(responseListByActor);
+                    byte[] responseListByActorFormatted = this.formatResp.listByAttribute(205, responseListByActor);
                     this.output.write(responseListByActorFormatted, 0, responseListByActorFormatted.length);
                 } catch (MongoException e) {
                     byte[] responseListByActorFormatted = this.formatResp.standard(405, e.getMessage().getBytes(StandardCharsets.UTF_8));
@@ -130,6 +130,21 @@ public class ReceiveThreadServer extends Thread {
                 }
 
                 break;
+            case 6:
+                // listByGenre
+                String genreName = this.parserReq.getQueryParam(request);
+
+                try {
+                    List<Movie> responseListByGenre = this.crud.listByGenre(genreName);
+                    byte[] responseListByGenreFormatted = this.formatResp.listByAttribute(206, responseListByGenre);
+                    this.output.write(responseListByGenreFormatted, 0, responseListByGenreFormatted.length);
+                } catch (MongoException e) {
+                    byte[] responseListByGenreFormatted = this.formatResp.standard(406, e.getMessage().getBytes(StandardCharsets.UTF_8));
+                    this.output.write(responseListByGenreFormatted, 0, responseListByGenreFormatted.length);
+                }
+
+                break;
+
             default:
                 System.out.println("ERROR: Unsupported operation\n");
                 break;
