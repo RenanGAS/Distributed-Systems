@@ -8,6 +8,9 @@ clearOutputs:
 	rm -rf ./src/main/java/project/javaOut
 	rm -rf ./src/main/kotlin/project/kotlinOut
 
+install:
+	mvn clean install
+
 compile:
 	mvn clean compile
 
@@ -17,6 +20,8 @@ server:
 client:
 	mvn exec:java -Dexec.mainClass="project.TCPClientKt"
 
-ping:
-	mvn exec:java -Dexec.mainClass="project.TesteConexao"
+javadoc:
+	mvn javadoc:javadoc
 
+dokka:
+	mvn dokka:javadoc
