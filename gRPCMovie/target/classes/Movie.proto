@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "project.javaOut";
+option java_outer_classname = "CRUDMovie";
+
+service CrudMovie {
+  rpc Create(Movie) returns (ResponseMsg) {};
+  rpc Read(SearchParam) returns (Movie) {};
+  rpc Update(Movie) returns (Movie) {};
+  rpc Delete(SearchParam) returns (ResponseMsg) {};
+  rpc ListByActor(SearchParam) returns (MovieList) {};
+  rpc ListByGenre(SearchParam) returns (MovieList) {};
+}
+
+message ResponseMsg {
+    string msg = 1;
+}
+
+message SearchParam {
+    string param = 1;
+}
+
+message Movie {
+    string title = 1;
+    optional int32 year = 2;
+    optional string released = 3;
+    optional string poster = 4;
+    optional string plot = 5;
+    optional string fullplot = 6;
+    repeated string directors = 7;
+    repeated string cast = 8;
+    repeated string contries = 9;
+    repeated string genres = 10;
+}
+
+message MovieList {
+    repeated Movie movies = 1;
+}
