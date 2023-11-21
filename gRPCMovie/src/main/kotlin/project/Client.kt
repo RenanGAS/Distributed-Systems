@@ -17,6 +17,7 @@ import io.grpc.ManagedChannelBuilder
 import project.javaOut.CrudMovieGrpc
 import project.javaOut.ResponseMsg
 import project.javaOut.SearchParam 
+import project.javaOut.MovieList
 //import org.slf4j.Logger
 //import org.slf4j.LoggerFactory
 
@@ -27,7 +28,7 @@ import project.javaOut.SearchParam
  * @return Envio da requisição
  */
 @Throws(IOException::class)
-    fun handleCodeOperation(operation: String, scanner: Scanner, channel: ManagedChannel, stub: CrudMovieGrpc.CrudMovieBlocking) { 
+    fun handleCodeOperation(operation: String, scanner: Scanner, channel: ManagedChannel, stub: CrudMovieGrpc.CrudMovieBlockingStub) { 
         when (operation) {
             "create" -> {
                 var movie: Movie = formMovie(scanner) 
@@ -40,22 +41,61 @@ import project.javaOut.SearchParam
                 System.out.print("Movie name: ")
                 var movieName: String = scanner.nextLine()
 
-                SearchParam param = SearchParam.newBuilder().setParam(movieName).build()
+                var param: SearchParam = SearchParam.newBuilder().setParam(movieName).build()
 
                 var movie: Movie = stub.read(param)
                 System.out.println("\n" + movie.toString() + "\n")
             }
             "update" -> {
-                println("update func")
+                var movieUpdates: Movie = formEditMovie(scanner) 
+
+                var movie: Movie = stub.update(movieUpdates)
+
+                System.out.println("\n" + movie.toString() + "\n")
             }
             "delete" -> {
-                println("delete func")
+                System.out.print("Movie name: ")
+                var movieName: String = scanner.nextLine()
+
+                var param: SearchParam = SearchParam.newBuilder().setParam(movieName).build()
+
+                var response: ResponseMsg = stub.delete(param) 
+
+                System.out.println("\n" + response.getMsg() + "\n")
             }
             "listByActor" -> {
-                println("listByActor func")
+                System.out.print("Actor name: ")
+                var actorName: String = scanner.nextLine()
+
+                var param: SearchParam = SearchParam.newBuilder().setParam(actorName).build()
+
+                var listMovies: MovieList = stub.listByActor(param) 
+
+                var listIterator: List<Movie> = listMovies.getMoviesList()
+
+                var i: Int = 0
+                for(movie in listIterator) {
+                    System.out.println("\n-------------------- Movie " + (i + 1) + " --------------------\n")
+                    System.out.println("\n" + movie.toString() + "\n")
+                    i++
+                }
             }
             "listByGenre" -> {
-                println("listByGenre func")
+                System.out.print("Genre name: ")
+                var genreName: String = scanner.nextLine()
+
+                var param: SearchParam = SearchParam.newBuilder().setParam(genreName).build()
+
+                var listMovies: MovieList = stub.listByGenre(param) 
+
+                var listIterator: List<Movie> = listMovies.getMoviesList()
+
+                var i: Int = 0
+                for(movie in listIterator) {
+                    System.out.println("\n-------------------- Movie " + (i + 1) + " --------------------\n")
+                    System.out.println("\n" + movie.toString() + "\n")
+                    i++
+                }
             }
             else -> {
                 System.out.println("ERROR: Unsupported operation\n")
