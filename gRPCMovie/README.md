@@ -58,4 +58,5 @@
 
  - O que tá em CrudMovie vai ser a implementação da interface de serviço
 
+- Colocar código de sucesso/erro, ver comentários, gerar docs, e se tiver tempo, criar threads pra não compartilhar logs 
 
