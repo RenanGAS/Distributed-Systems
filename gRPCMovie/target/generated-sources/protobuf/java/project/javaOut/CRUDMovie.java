@@ -44,21 +44,21 @@ public final class CRUDMovie {
   static {
     java.lang.String[] descriptorData = {
       "\n\013Movie.proto\"\032\n\013ResponseMsg\022\013\n\003msg\030\001 \001(" +
-      "\t\"\034\n\013SearchParam\022\r\n\005param\030\001 \001(\t\"\371\001\n\005Movi" +
+      "\t\"\034\n\013SearchParam\022\r\n\005param\030\001 \001(\t\"\372\001\n\005Movi" +
       "e\022\r\n\005title\030\001 \001(\t\022\021\n\004year\030\002 \001(\005H\000\210\001\001\022\025\n\010r" +
       "eleased\030\003 \001(\tH\001\210\001\001\022\023\n\006poster\030\004 \001(\tH\002\210\001\001\022" +
       "\021\n\004plot\030\005 \001(\tH\003\210\001\001\022\025\n\010fullplot\030\006 \001(\tH\004\210\001" +
-      "\001\022\021\n\tdirectors\030\007 \003(\t\022\014\n\004cast\030\010 \003(\t\022\020\n\010co" +
-      "ntries\030\t \003(\t\022\016\n\006genres\030\n \003(\tB\007\n\005_yearB\013\n" +
-      "\t_releasedB\t\n\007_posterB\007\n\005_plotB\013\n\t_fullp" +
-      "lot\"#\n\tMovieList\022\026\n\006movies\030\001 \003(\0132\006.Movie" +
-      "2\347\001\n\tCrudMovie\022 \n\006Create\022\006.Movie\032\014.Respo" +
-      "nseMsg\"\000\022\036\n\004Read\022\014.SearchParam\032\006.Movie\"\000" +
-      "\022\032\n\006Update\022\006.Movie\032\006.Movie\"\000\022&\n\006Delete\022\014" +
-      ".SearchParam\032\014.ResponseMsg\"\000\022)\n\013ListByAc" +
-      "tor\022\014.SearchParam\032\n.MovieList\"\000\022)\n\013ListB" +
-      "yGenre\022\014.SearchParam\032\n.MovieList\"\000B\036\n\017pr" +
-      "oject.javaOutB\tCRUDMovieP\001b\006proto3"
+      "\001\022\021\n\tdirectors\030\007 \003(\t\022\014\n\004cast\030\010 \003(\t\022\021\n\tco" +
+      "untries\030\t \003(\t\022\016\n\006genres\030\n \003(\tB\007\n\005_yearB\013" +
+      "\n\t_releasedB\t\n\007_posterB\007\n\005_plotB\013\n\t_full" +
+      "plot\"#\n\tMovieList\022\026\n\006movies\030\001 \003(\0132\006.Movi" +
+      "e2\347\001\n\tCrudMovie\022 \n\006Create\022\006.Movie\032\014.Resp" +
+      "onseMsg\"\000\022\036\n\004Read\022\014.SearchParam\032\006.Movie\"" +
+      "\000\022\032\n\006Update\022\006.Movie\032\006.Movie\"\000\022&\n\006Delete\022" +
+      "\014.SearchParam\032\014.ResponseMsg\"\000\022)\n\013ListByA" +
+      "ctor\022\014.SearchParam\032\n.MovieList\"\000\022)\n\013List" +
+      "ByGenre\022\014.SearchParam\032\n.MovieList\"\000B\036\n\017p" +
+      "roject.javaOutB\tCRUDMovieP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -81,7 +81,7 @@ public final class CRUDMovie {
     internal_static_Movie_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Movie_descriptor,
-        new java.lang.String[] { "Title", "Year", "Released", "Poster", "Plot", "Fullplot", "Directors", "Cast", "Contries", "Genres", "Year", "Released", "Poster", "Plot", "Fullplot", });
+        new java.lang.String[] { "Title", "Year", "Released", "Poster", "Plot", "Fullplot", "Directors", "Cast", "Countries", "Genres", "Year", "Released", "Poster", "Plot", "Fullplot", });
     internal_static_MovieList_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_MovieList_fieldAccessorTable = new

@@ -69,10 +69,10 @@ public class CrudMovieImpl extends CrudMovieGrpc.CrudMovieImplBase {
         }
 
         List<String> countriesList = new ArrayList<>();
-        int numCountries = movie.getContriesCount();
+        int numCountries = movie.getCountriesCount();
 
         for (int i = 0; i < numCountries; i++) {
-            countriesList.add(movie.getContries(i));    
+            countriesList.add(movie.getCountries(i));    
         }
 
         List<String> genresList = new ArrayList<>();
@@ -200,7 +200,7 @@ public class CrudMovieImpl extends CrudMovieGrpc.CrudMovieImplBase {
             List<String> listCountries = document.getList("countries", String.class);
 
             for(String country : listCountries) {
-                movie.addContries(country);
+                movie.addCountries(country);
             }
         }
 

@@ -149,29 +149,29 @@ public interface MovieOrBuilder extends
       getCastBytes(int index);
 
   /**
-   * <code>repeated string contries = 9;</code>
-   * @return A list containing the contries.
+   * <code>repeated string countries = 9;</code>
+   * @return A list containing the countries.
    */
   java.util.List<java.lang.String>
-      getContriesList();
+      getCountriesList();
   /**
-   * <code>repeated string contries = 9;</code>
-   * @return The count of contries.
+   * <code>repeated string countries = 9;</code>
+   * @return The count of countries.
    */
-  int getContriesCount();
+  int getCountriesCount();
   /**
-   * <code>repeated string contries = 9;</code>
+   * <code>repeated string countries = 9;</code>
    * @param index The index of the element to return.
-   * @return The contries at the given index.
+   * @return The countries at the given index.
    */
-  java.lang.String getContries(int index);
+  java.lang.String getCountries(int index);
   /**
-   * <code>repeated string contries = 9;</code>
+   * <code>repeated string countries = 9;</code>
    * @param index The index of the value to return.
-   * @return The bytes of the contries at the given index.
+   * @return The bytes of the countries at the given index.
    */
   com.google.protobuf.ByteString
-      getContriesBytes(int index);
+      getCountriesBytes(int index);
 
   /**
    * <code>repeated string genres = 10;</code>

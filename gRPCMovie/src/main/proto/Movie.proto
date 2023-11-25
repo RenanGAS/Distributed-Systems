@@ -30,7 +30,7 @@ message Movie {
     optional string fullplot = 6;
     repeated string directors = 7;
     repeated string cast = 8;
-    repeated string contries = 9;
+    repeated string countries = 9;
     repeated string genres = 10;
 }
 

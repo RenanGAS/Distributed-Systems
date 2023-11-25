@@ -198,7 +198,7 @@ import project.javaOut.MovieList
                         }
                     }
 
-                movie.addContries(countryName)
+                movie.addCountries(countryName)
                     countCountry++
             }
 
@@ -311,7 +311,7 @@ fun formEditMovie(scanner: Scanner): Movie {
                     break
                 }
 
-            movie.addContries(countryName)
+            movie.addCountries(countryName)
                 countCountry++
         }
 
@@ -338,42 +338,41 @@ fun formEditMovie(scanner: Scanner): Movie {
  * Client: Thread para envio de requisições ao ReceiveThreadServer 
  */
 fun main() {
-    println("alo")
-    var scanner = Scanner(System.`in`)
+        var scanner = Scanner(System.`in`)
 
-    try {
-        var buffer: String
+        try {
+            var buffer: String
 
-        var channel:ManagedChannel= ManagedChannelBuilder.forAddress("localhost", 6666).usePlaintext().build()
+                var channel:ManagedChannel= ManagedChannelBuilder.forAddress("localhost", 6666).usePlaintext().build()
 
-        var stub: CrudMovieGrpc.CrudMovieBlockingStub = CrudMovieGrpc.newBlockingStub(channel)
+                var stub: CrudMovieGrpc.CrudMovieBlockingStub = CrudMovieGrpc.newBlockingStub(channel)
 
-        while (true) {
-            buffer = scanner.nextLine()
-            print("\n")
+                while (true) {
+                    buffer = scanner.nextLine()
+                        print("\n")
 
-            if (buffer.trim().equals("EXIT")) {
-                //logger.info("Client exiting")
-                break
-            }
+                        if (buffer.trim().equals("EXIT")) {
+                            //logger.info("Client exiting")
+                            break
+                        }
 
-            try {
-                handleCodeOperation(buffer, scanner, channel, stub)
-            } catch (ioe: IOException) {
-                println("\nERROR: " + ioe.message + "\n")
-            } catch (e: Exception) {
-                println("\nERROR: " + e.message + "\n")
-            }
+                    try {
+                        handleCodeOperation(buffer, scanner, channel, stub)
+                    } catch (ioe: IOException) {
+                        println("\nERROR: " + ioe.message + "\n")
+                    } catch (e: Exception) {
+                        println("\nERROR: " + e.message + "\n")
+                    }
+                }
+
+            channel.shutdown()
+        } catch (eofe: EOFException) {
+            //logger.warn("EOFException: " + eofe.message)
+            System.out.println("EOFException: " + eofe.message)
+        } catch (ioe: IOException) {
+            //logger.warn("IOException: " + ioe.message)
+            System.out.println("IOException: " + ioe.message)
         }
-
-        channel.shutdown()
-    } catch (eofe: EOFException) {
-        //logger.warn("EOFException: " + eofe.message)
-        System.out.println("EOFException: " + eofe.message)
-    } catch (ioe: IOException) {
-        //logger.warn("IOException: " + ioe.message)
-        System.out.println("IOException: " + ioe.message)
-    }
     //logger.info("SendThread finished.")
     System.out.println("SendThread finished.")
 }

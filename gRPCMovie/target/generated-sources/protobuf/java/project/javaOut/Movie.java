@@ -23,7 +23,7 @@ private static final long serialVersionUID = 0L;
     fullplot_ = "";
     directors_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     cast_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-    contries_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+    countries_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     genres_ = com.google.protobuf.LazyStringArrayList.EMPTY;
   }
 
@@ -114,10 +114,10 @@ private static final long serialVersionUID = 0L;
           case 74: {
             java.lang.String s = input.readStringRequireUtf8();
             if (!((mutable_bitField0_ & 0x00000080) != 0)) {
-              contries_ = new com.google.protobuf.LazyStringArrayList();
+              countries_ = new com.google.protobuf.LazyStringArrayList();
               mutable_bitField0_ |= 0x00000080;
             }
-            contries_.add(s);
+            countries_.add(s);
             break;
           }
           case 82: {
@@ -151,7 +151,7 @@ private static final long serialVersionUID = 0L;
         cast_ = cast_.getUnmodifiableView();
       }
       if (((mutable_bitField0_ & 0x00000080) != 0)) {
-        contries_ = contries_.getUnmodifiableView();
+        countries_ = countries_.getUnmodifiableView();
       }
       if (((mutable_bitField0_ & 0x00000100) != 0)) {
         genres_ = genres_.getUnmodifiableView();
@@ -485,39 +485,39 @@ private static final long serialVersionUID = 0L;
     return cast_.getByteString(index);
   }
 
-  public static final int CONTRIES_FIELD_NUMBER = 9;
-  private com.google.protobuf.LazyStringList contries_;
+  public static final int COUNTRIES_FIELD_NUMBER = 9;
+  private com.google.protobuf.LazyStringList countries_;
   /**
-   * <code>repeated string contries = 9;</code>
-   * @return A list containing the contries.
+   * <code>repeated string countries = 9;</code>
+   * @return A list containing the countries.
    */
   public com.google.protobuf.ProtocolStringList
-      getContriesList() {
-    return contries_;
+      getCountriesList() {
+    return countries_;
   }
   /**
-   * <code>repeated string contries = 9;</code>
-   * @return The count of contries.
+   * <code>repeated string countries = 9;</code>
+   * @return The count of countries.
    */
-  public int getContriesCount() {
-    return contries_.size();
+  public int getCountriesCount() {
+    return countries_.size();
   }
   /**
-   * <code>repeated string contries = 9;</code>
+   * <code>repeated string countries = 9;</code>
    * @param index The index of the element to return.
-   * @return The contries at the given index.
+   * @return The countries at the given index.
    */
-  public java.lang.String getContries(int index) {
-    return contries_.get(index);
+  public java.lang.String getCountries(int index) {
+    return countries_.get(index);
   }
   /**
-   * <code>repeated string contries = 9;</code>
+   * <code>repeated string countries = 9;</code>
    * @param index The index of the value to return.
-   * @return The bytes of the contries at the given index.
+   * @return The bytes of the countries at the given index.
    */
   public com.google.protobuf.ByteString
-      getContriesBytes(int index) {
-    return contries_.getByteString(index);
+      getCountriesBytes(int index) {
+    return countries_.getByteString(index);
   }
 
   public static final int GENRES_FIELD_NUMBER = 10;
@@ -593,8 +593,8 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < cast_.size(); i++) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 8, cast_.getRaw(i));
     }
-    for (int i = 0; i < contries_.size(); i++) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 9, contries_.getRaw(i));
+    for (int i = 0; i < countries_.size(); i++) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 9, countries_.getRaw(i));
     }
     for (int i = 0; i < genres_.size(); i++) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 10, genres_.getRaw(i));
@@ -645,11 +645,11 @@ private static final long serialVersionUID = 0L;
     }
     {
       int dataSize = 0;
-      for (int i = 0; i < contries_.size(); i++) {
-        dataSize += computeStringSizeNoTag(contries_.getRaw(i));
+      for (int i = 0; i < countries_.size(); i++) {
+        dataSize += computeStringSizeNoTag(countries_.getRaw(i));
       }
       size += dataSize;
-      size += 1 * getContriesList().size();
+      size += 1 * getCountriesList().size();
     }
     {
       int dataSize = 0;
@@ -705,8 +705,8 @@ private static final long serialVersionUID = 0L;
         .equals(other.getDirectorsList())) return false;
     if (!getCastList()
         .equals(other.getCastList())) return false;
-    if (!getContriesList()
-        .equals(other.getContriesList())) return false;
+    if (!getCountriesList()
+        .equals(other.getCountriesList())) return false;
     if (!getGenresList()
         .equals(other.getGenresList())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
@@ -750,9 +750,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + CAST_FIELD_NUMBER;
       hash = (53 * hash) + getCastList().hashCode();
     }
-    if (getContriesCount() > 0) {
-      hash = (37 * hash) + CONTRIES_FIELD_NUMBER;
-      hash = (53 * hash) + getContriesList().hashCode();
+    if (getCountriesCount() > 0) {
+      hash = (37 * hash) + COUNTRIES_FIELD_NUMBER;
+      hash = (53 * hash) + getCountriesList().hashCode();
     }
     if (getGenresCount() > 0) {
       hash = (37 * hash) + GENRES_FIELD_NUMBER;
@@ -907,7 +907,7 @@ private static final long serialVersionUID = 0L;
       bitField0_ = (bitField0_ & ~0x00000020);
       cast_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       bitField0_ = (bitField0_ & ~0x00000040);
-      contries_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      countries_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       bitField0_ = (bitField0_ & ~0x00000080);
       genres_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       bitField0_ = (bitField0_ & ~0x00000100);
@@ -971,10 +971,10 @@ private static final long serialVersionUID = 0L;
       }
       result.cast_ = cast_;
       if (((bitField0_ & 0x00000080) != 0)) {
-        contries_ = contries_.getUnmodifiableView();
+        countries_ = countries_.getUnmodifiableView();
         bitField0_ = (bitField0_ & ~0x00000080);
       }
-      result.contries_ = contries_;
+      result.countries_ = countries_;
       if (((bitField0_ & 0x00000100) != 0)) {
         genres_ = genres_.getUnmodifiableView();
         bitField0_ = (bitField0_ & ~0x00000100);
@@ -1076,13 +1076,13 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       }
-      if (!other.contries_.isEmpty()) {
-        if (contries_.isEmpty()) {
-          contries_ = other.contries_;
+      if (!other.countries_.isEmpty()) {
+        if (countries_.isEmpty()) {
+          countries_ = other.countries_;
           bitField0_ = (bitField0_ & ~0x00000080);
         } else {
-          ensureContriesIsMutable();
-          contries_.addAll(other.contries_);
+          ensureCountriesIsMutable();
+          countries_.addAll(other.countries_);
         }
         onChanged();
       }
@@ -1793,112 +1793,112 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private com.google.protobuf.LazyStringList contries_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-    private void ensureContriesIsMutable() {
+    private com.google.protobuf.LazyStringList countries_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+    private void ensureCountriesIsMutable() {
       if (!((bitField0_ & 0x00000080) != 0)) {
-        contries_ = new com.google.protobuf.LazyStringArrayList(contries_);
+        countries_ = new com.google.protobuf.LazyStringArrayList(countries_);
         bitField0_ |= 0x00000080;
        }
     }
     /**
-     * <code>repeated string contries = 9;</code>
-     * @return A list containing the contries.
+     * <code>repeated string countries = 9;</code>
+     * @return A list containing the countries.
      */
     public com.google.protobuf.ProtocolStringList
-        getContriesList() {
-      return contries_.getUnmodifiableView();
+        getCountriesList() {
+      return countries_.getUnmodifiableView();
     }
     /**
-     * <code>repeated string contries = 9;</code>
-     * @return The count of contries.
+     * <code>repeated string countries = 9;</code>
+     * @return The count of countries.
      */
-    public int getContriesCount() {
-      return contries_.size();
+    public int getCountriesCount() {
+      return countries_.size();
     }
     /**
-     * <code>repeated string contries = 9;</code>
+     * <code>repeated string countries = 9;</code>
      * @param index The index of the element to return.
-     * @return The contries at the given index.
+     * @return The countries at the given index.
      */
-    public java.lang.String getContries(int index) {
-      return contries_.get(index);
+    public java.lang.String getCountries(int index) {
+      return countries_.get(index);
     }
     /**
-     * <code>repeated string contries = 9;</code>
+     * <code>repeated string countries = 9;</code>
      * @param index The index of the value to return.
-     * @return The bytes of the contries at the given index.
+     * @return The bytes of the countries at the given index.
      */
     public com.google.protobuf.ByteString
-        getContriesBytes(int index) {
-      return contries_.getByteString(index);
+        getCountriesBytes(int index) {
+      return countries_.getByteString(index);
     }
     /**
-     * <code>repeated string contries = 9;</code>
+     * <code>repeated string countries = 9;</code>
      * @param index The index to set the value at.
-     * @param value The contries to set.
+     * @param value The countries to set.
      * @return This builder for chaining.
      */
-    public Builder setContries(
+    public Builder setCountries(
         int index, java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureContriesIsMutable();
-      contries_.set(index, value);
+  ensureCountriesIsMutable();
+      countries_.set(index, value);
       onChanged();
       return this;
     }
     /**
-     * <code>repeated string contries = 9;</code>
-     * @param value The contries to add.
+     * <code>repeated string countries = 9;</code>
+     * @param value The countries to add.
      * @return This builder for chaining.
      */
-    public Builder addContries(
+    public Builder addCountries(
         java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureContriesIsMutable();
-      contries_.add(value);
+  ensureCountriesIsMutable();
+      countries_.add(value);
       onChanged();
       return this;
     }
     /**
-     * <code>repeated string contries = 9;</code>
-     * @param values The contries to add.
+     * <code>repeated string countries = 9;</code>
+     * @param values The countries to add.
      * @return This builder for chaining.
      */
-    public Builder addAllContries(
+    public Builder addAllCountries(
         java.lang.Iterable<java.lang.String> values) {
-      ensureContriesIsMutable();
+      ensureCountriesIsMutable();
       com.google.protobuf.AbstractMessageLite.Builder.addAll(
-          values, contries_);
+          values, countries_);
       onChanged();
       return this;
     }
     /**
-     * <code>repeated string contries = 9;</code>
+     * <code>repeated string countries = 9;</code>
      * @return This builder for chaining.
      */
-    public Builder clearContries() {
-      contries_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+    public Builder clearCountries() {
+      countries_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       bitField0_ = (bitField0_ & ~0x00000080);
       onChanged();
       return this;
     }
     /**
-     * <code>repeated string contries = 9;</code>
-     * @param value The bytes of the contries to add.
+     * <code>repeated string countries = 9;</code>
+     * @param value The bytes of the countries to add.
      * @return This builder for chaining.
      */
-    public Builder addContriesBytes(
+    public Builder addCountriesBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
-      ensureContriesIsMutable();
-      contries_.add(value);
+      ensureCountriesIsMutable();
+      countries_.add(value);
       onChanged();
       return this;
     }
