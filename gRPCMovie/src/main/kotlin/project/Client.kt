@@ -22,10 +22,12 @@ import project.javaOut.MovieList
 //import org.slf4j.LoggerFactory
 
 /**
- * Faz procedimentos necessários para formatação e envio da requisição com formulários e FormatRequest
+ * Faz procedimentos necessários para o envio da chamada remota 
  * @param operation String correspondente a operação desejada
  * @param scanner Scanner para leitura de entradas por terminal
- * @return Envio da requisição
+ * @param channel Meio de comunicação com o servidor
+ * @param stub Interface para acesso às chamadas disponíveis
+ * @return Resultado da chamada
  */
 @Throws(IOException::class)
     fun handleCodeOperation(operation: String, scanner: Scanner, channel: ManagedChannel, stub: CrudMovieGrpc.CrudMovieBlockingStub) { 
@@ -44,14 +46,27 @@ import project.javaOut.MovieList
                 var param: SearchParam = SearchParam.newBuilder().setParam(movieName).build()
 
                 var movie: Movie = stub.read(param)
-                System.out.println("\n" + movie.toString() + "\n")
+                
+                var movieString: String = movie.toString()
+
+                if (movieString.isNullOrEmpty()) {
+                    System.out.println("\nERROR: Movie not found\n")
+                } else {
+                    System.out.println("\n" + movie.toString() + "\n")
+                }
             }
             "update" -> {
                 var movieUpdates: Movie = formEditMovie(scanner) 
 
                 var movie: Movie = stub.update(movieUpdates)
 
-                System.out.println("\n" + movie.toString() + "\n")
+                var movieString: String = movie.toString()
+
+                if (movieString.isNullOrEmpty()) {
+                    System.out.println("\nERROR: Movie does not exist\n")
+                } else {
+                    System.out.println("\n" + movie.toString() + "\n")
+                }
             }
             "delete" -> {
                 System.out.print("Movie name: ")
@@ -71,13 +86,19 @@ import project.javaOut.MovieList
 
                 var listMovies: MovieList = stub.listByActor(param) 
 
-                var listIterator: List<Movie> = listMovies.getMoviesList()
+                var listMoviesString: String = listMovies.toString()
 
-                var i: Int = 0
-                for(movie in listIterator) {
-                    System.out.println("\n-------------------- Movie " + (i + 1) + " --------------------\n")
-                    System.out.println("\n" + movie.toString() + "\n")
-                    i++
+                if (listMoviesString.isNullOrEmpty()) {
+                    System.out.println("\nERROR: There is no movies with this actor\n")
+                } else {
+                    var listIterator: List<Movie> = listMovies.getMoviesList()
+
+                    var i: Int = 0
+                    for(movie in listIterator) {
+                        System.out.println("\n-------------------- Movie " + (i + 1) + " --------------------\n")
+                            System.out.println("\n" + movie.toString() + "\n")
+                            i++
+                    }
                 }
             }
             "listByGenre" -> {
@@ -88,13 +109,19 @@ import project.javaOut.MovieList
 
                 var listMovies: MovieList = stub.listByGenre(param) 
 
-                var listIterator: List<Movie> = listMovies.getMoviesList()
+                var listMoviesString: String = listMovies.toString()
 
-                var i: Int = 0
-                for(movie in listIterator) {
-                    System.out.println("\n-------------------- Movie " + (i + 1) + " --------------------\n")
-                    System.out.println("\n" + movie.toString() + "\n")
-                    i++
+                if (listMoviesString.isNullOrEmpty()) {
+                    System.out.println("\nERROR: There is no movies with this genre\n")
+                } else {
+                    var listIterator: List<Movie> = listMovies.getMoviesList()
+
+                    var i: Int = 0
+                    for(movie in listIterator) {
+                        System.out.println("\n-------------------- Movie " + (i + 1) + " --------------------\n")
+                        System.out.println("\n" + movie.toString() + "\n")
+                        i++
+                    }
                 }
             }
             else -> {
@@ -226,6 +253,12 @@ import project.javaOut.MovieList
         return movie.build()
     }
 
+/**
+ * Formulário para edição de um Movie. São aceitos campos vazios
+ * @param scanner Scanner para receber entradas do terminal
+ * @return Objeto Movie com os novos valores fornecidos 
+ */
+@Throws(IOException::class)
 fun formEditMovie(scanner: Scanner): Movie {
     var movie: Movie.Builder = Movie.newBuilder()
         System.out.print("Title: ")
@@ -335,7 +368,7 @@ fun formEditMovie(scanner: Scanner): Movie {
 }
 
 /**
- * Client: Thread para envio de requisições ao ReceiveThreadServer 
+ * Envia chamadas remotas ao servidor (create, read, update, delete, listByActor, listByGenre) 
  */
 fun main() {
         var scanner = Scanner(System.`in`)

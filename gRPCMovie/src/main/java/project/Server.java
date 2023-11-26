@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import io.grpc.ServerBuilder;
 
 /**
- * Server: Servidor para responder requisições do TCPClient realizando operações sobre o servidor MongoDB 
+ * Responde chamdas remotas do cliente realizando operações sobre o servidor MongoDB 
  */
 public class Server {
 	

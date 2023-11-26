@@ -27,12 +27,16 @@ import java.util.Map;
 import com.google.protobuf.Descriptors;
 import com.mongodb.client.model.ReturnDocument;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Implementa interface de serviço 
+ * Implementa interface de serviço CrudMovie em Movie.proto 
  */
 
 public class CrudMovieImpl extends CrudMovieGrpc.CrudMovieImplBase {
+
+	static Logger logger = LoggerFactory.getLogger(CrudMovieImpl.class);
 
     /**
      * Cria um Movie no MongoDB
@@ -82,28 +86,36 @@ public class CrudMovieImpl extends CrudMovieGrpc.CrudMovieImplBase {
             genresList.add(movie.getGenres(i));    
         }
 
-        String uri = "mongodb+srv://renansakaoki:123@mflix.hokkmkd.mongodb.net/?retryWrites=true&w=majority";
-        
-        MongoClient mongoClient = MongoClients.create(uri);
-        MongoDatabase database = mongoClient.getDatabase("sample_mflix");
-        MongoCollection<Document> collection = database.getCollection("movies");
+        ResponseMsg response = null;
 
-        collection.insertOne(new Document()
-                .append("_id", new ObjectId())
-                .append("plot", plot) 
-                .append("poster", poster) 
-                .append("genres", genresList) 
-                .append("cast", castList) 
-                .append("title", title) 
-                .append("fullplot", fullplot)
-                .append("released", released)
-                .append("directors", directorsList)
-                .append("year", year)
-                .append("countries", countriesList));
+        try {
+            String uri = "mongodb+srv://renansakaoki:123@mflix.hokkmkd.mongodb.net/?retryWrites=true&w=majority";
 
-        mongoClient.close();
+            MongoClient mongoClient = MongoClients.create(uri);
+            MongoDatabase database = mongoClient.getDatabase("sample_mflix");
+            MongoCollection<Document> collection = database.getCollection("movies");
 
-        ResponseMsg response = ResponseMsg.newBuilder().setMsg("Movie created successfully").build();
+            collection.insertOne(new Document()
+                    .append("_id", new ObjectId())
+                    .append("plot", plot) 
+                    .append("poster", poster) 
+                    .append("genres", genresList) 
+                    .append("cast", castList) 
+                    .append("title", title) 
+                    .append("fullplot", fullplot)
+                    .append("released", released)
+                    .append("directors", directorsList)
+                    .append("year", year)
+                    .append("countries", countriesList));
+
+            mongoClient.close();
+
+            logger.info("Movie created successfully");
+            response = ResponseMsg.newBuilder().setMsg("SUCCESS: Movie created successfully").build();
+        } catch (NullPointerException | MongoException e) {
+            logger.warn("Movie creation failed");
+            response = ResponseMsg.newBuilder().setMsg("ERROR: " + e.getMessage()).build();
+        } 
 
         responseObserver.onNext(response);
         responseObserver.onCompleted();
@@ -128,24 +140,27 @@ public class CrudMovieImpl extends CrudMovieGrpc.CrudMovieImplBase {
                 .serverApi(serverApi)
                 .build();
 
-        MongoClient mongoClient = MongoClients.create(settings);
-        MongoDatabase database = mongoClient.getDatabase("sample_mflix");
-        MongoCollection<Document> collection = database.getCollection("movies");
-
-        Document document = collection.find(Filters.eq("title", param.getParam())).first();
-
-        mongoClient.close();
-
-        Movie movie;
+        Movie movie = null;
 
         try {
-            movie = documentToMovie(document);
-        } catch (NullPointerException npe) {
-            throw new MongoException(npe.getMessage());
-        }
+            MongoClient mongoClient = MongoClients.create(settings);
+            MongoDatabase database = mongoClient.getDatabase("sample_mflix");
+            MongoCollection<Document> collection = database.getCollection("movies");
 
-        responseObserver.onNext(movie);
-        responseObserver.onCompleted();
+            Document document = collection.find(Filters.eq("title", param.getParam())).first();
+
+            mongoClient.close();
+
+            movie = documentToMovie(document);
+
+            logger.info("Movie retrieved successfully");
+            responseObserver.onNext(movie);
+            responseObserver.onCompleted();
+        } catch (NullPointerException | MongoException me) {
+            logger.warn("Movie retrieve failed");
+            responseObserver.onNext(movie);
+            responseObserver.onCompleted();
+        } 
     }
 
     /**
@@ -222,7 +237,7 @@ public class CrudMovieImpl extends CrudMovieGrpc.CrudMovieImplBase {
      * @return Objeto Movie
      */
     @Override
-    public void update(Movie movie, StreamObserver<Movie> responseObserver) throws MongoException {
+    public void update(Movie movie, StreamObserver<Movie> responseObserver) {
         String connectionString = "mongodb+srv://renansakaoki:123@mflix.hokkmkd.mongodb.net/?retryWrites=true&w=majority";
 
         ServerApi serverApi = ServerApi.builder()
@@ -236,32 +251,35 @@ public class CrudMovieImpl extends CrudMovieGrpc.CrudMovieImplBase {
 
         Document result = null;
 
-        MongoClient mongoClient = MongoClients.create(settings);
-        MongoDatabase database = mongoClient.getDatabase("sample_mflix");
-        MongoCollection<Document> collection = database.getCollection("movies");
-
-        List<Bson> updates = new ArrayList<>();
-
-        for (Map.Entry<Descriptors.FieldDescriptor, Object> attribute: movie.getAllFields().entrySet()) {
-            updates.add(Updates.set(attribute.getKey().getName(), attribute.getValue()));
-        }
-
-        Bson combinedUpdates = Updates.combine(updates);
-
-        result = collection.findOneAndUpdate(Filters.eq("title", movie.getTitle()), combinedUpdates, new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER));
-
-        mongoClient.close();
-
         Movie movieUpdated = null;
 
         try {
+            MongoClient mongoClient = MongoClients.create(settings);
+            MongoDatabase database = mongoClient.getDatabase("sample_mflix");
+            MongoCollection<Document> collection = database.getCollection("movies");
+
+            List<Bson> updates = new ArrayList<>();
+
+            for (Map.Entry<Descriptors.FieldDescriptor, Object> attribute: movie.getAllFields().entrySet()) {
+                updates.add(Updates.set(attribute.getKey().getName(), attribute.getValue()));
+            }
+
+            Bson combinedUpdates = Updates.combine(updates);
+
+            result = collection.findOneAndUpdate(Filters.eq("title", movie.getTitle()), combinedUpdates, new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER));
+
+            mongoClient.close();
+
             movieUpdated = documentToMovie(result);
-        } catch (NullPointerException npe) {
-            throw new MongoException(npe.getMessage());
+
+            logger.info("Movie updated successfully");
+            responseObserver.onNext(movieUpdated);
+            responseObserver.onCompleted();
+        } catch (NullPointerException | MongoException ex) {
+            logger.warn("Movie update failed");
+            responseObserver.onNext(movieUpdated);
+            responseObserver.onCompleted();
         }
-        
-        responseObserver.onNext(movieUpdated);
-        responseObserver.onCompleted();
     }
 
     /**
@@ -271,7 +289,7 @@ public class CrudMovieImpl extends CrudMovieGrpc.CrudMovieImplBase {
      * @return Mensagem de sucesso ou falha
      */
     @Override
-    public void delete(SearchParam param, StreamObserver<ResponseMsg> responseObserver) throws MongoException {
+    public void delete(SearchParam param, StreamObserver<ResponseMsg> responseObserver) {
         String connectionString = "mongodb+srv://renansakaoki:123@mflix.hokkmkd.mongodb.net/?retryWrites=true&w=majority";
 
         ServerApi serverApi = ServerApi.builder()
@@ -283,15 +301,23 @@ public class CrudMovieImpl extends CrudMovieGrpc.CrudMovieImplBase {
                 .serverApi(serverApi)
                 .build();
 
-        MongoClient mongoClient = MongoClients.create(settings);
-        MongoDatabase database = mongoClient.getDatabase("sample_mflix");
-        MongoCollection<Document> collection = database.getCollection("movies");
+        ResponseMsg response = null;
 
-        collection.deleteOne(Filters.eq("title", param.getParam()));
+        try {
+            MongoClient mongoClient = MongoClients.create(settings);
+            MongoDatabase database = mongoClient.getDatabase("sample_mflix");
+            MongoCollection<Document> collection = database.getCollection("movies");
 
-        mongoClient.close();
+            collection.deleteOne(Filters.eq("title", param.getParam()));
 
-        ResponseMsg response = ResponseMsg.newBuilder().setMsg("Movie deleted successfully").build();
+            mongoClient.close();
+
+            logger.info("Movie deleted successfully");
+            response = ResponseMsg.newBuilder().setMsg("SUCCESS: Movie deleted successfully").build(); 
+        } catch (NullPointerException | MongoException ex) {
+            logger.warn("Movie delete failed");
+            response = ResponseMsg.newBuilder().setMsg("ERROR: " + ex.getMessage()).build(); 
+        }
 
         responseObserver.onNext(response);
         responseObserver.onCompleted();
@@ -303,7 +329,7 @@ public class CrudMovieImpl extends CrudMovieGrpc.CrudMovieImplBase {
      * @param actorName Nome do ator
      * @return Lista de Movies 
      */
-    public void listByActor(SearchParam param, StreamObserver<MovieList> responseObserver) throws MongoException {
+    public void listByActor(SearchParam param, StreamObserver<MovieList> responseObserver) {
         String connectionString = "mongodb+srv://renansakaoki:123@mflix.hokkmkd.mongodb.net/?retryWrites=true&w=majority";
 
         ServerApi serverApi = ServerApi.builder()
@@ -315,32 +341,42 @@ public class CrudMovieImpl extends CrudMovieGrpc.CrudMovieImplBase {
                 .serverApi(serverApi)
                 .build();
 
-        MongoClient mongoClient = MongoClients.create(settings);
-        MongoDatabase database = mongoClient.getDatabase("sample_mflix");
-        MongoCollection<Document> collection = database.getCollection("movies");
-
-        Bson filter = Filters.in("cast", param.getParam());
-        FindIterable<Document> movies = collection.find(filter).limit(10);
-
-        if (movies.first() == null) {
-           throw new MongoException("There are no movies with this actor"); 
-        }
-
-        MovieList.Builder listMovies = MovieList.newBuilder();
+        MovieList listOfMovies = null;
 
         try {
+            MongoClient mongoClient = MongoClients.create(settings);
+            MongoDatabase database = mongoClient.getDatabase("sample_mflix");
+            MongoCollection<Document> collection = database.getCollection("movies");
+
+            Bson filter = Filters.in("cast", param.getParam());
+            FindIterable<Document> movies = collection.find(filter).limit(10);
+
+            if (movies.first() == null) {
+                logger.warn("Movies listed by actor failed");
+                responseObserver.onNext(listOfMovies);
+                responseObserver.onCompleted();
+                return;
+            }
+
+            MovieList.Builder listMovies = MovieList.newBuilder();
+
             for (Document docMovie : movies) {
                 Movie movie = documentToMovie(docMovie); 
                 listMovies.addMovies(movie);
             }
-        } catch (NullPointerException npe) {
-            throw new MongoException(npe.getMessage());
+
+            listOfMovies = listMovies.build();
+
+            mongoClient.close();
+
+            logger.info("Movies listed by actor successfully");
+            responseObserver.onNext(listOfMovies);
+            responseObserver.onCompleted();
+        } catch (NullPointerException | MongoException ex) {
+            logger.warn("Movies listed by actor failed");
+            responseObserver.onNext(listOfMovies);
+            responseObserver.onCompleted();
         }
-
-        mongoClient.close();
-
-        responseObserver.onNext(listMovies.build());
-        responseObserver.onCompleted();
     }
 
     /**
@@ -349,7 +385,7 @@ public class CrudMovieImpl extends CrudMovieGrpc.CrudMovieImplBase {
      * @param genreName Nome do gênero
      * @return Lista de gêneros 
      */
-    public void listByGenre(SearchParam param, StreamObserver<MovieList> responseObserver) throws MongoException {
+    public void listByGenre(SearchParam param, StreamObserver<MovieList> responseObserver) {
         String connectionString = "mongodb+srv://renansakaoki:123@mflix.hokkmkd.mongodb.net/?retryWrites=true&w=majority";
 
         ServerApi serverApi = ServerApi.builder()
@@ -361,33 +397,42 @@ public class CrudMovieImpl extends CrudMovieGrpc.CrudMovieImplBase {
                 .serverApi(serverApi)
                 .build();
 
-
-        MongoClient mongoClient = MongoClients.create(settings);
-        MongoDatabase database = mongoClient.getDatabase("sample_mflix");
-        MongoCollection<Document> collection = database.getCollection("movies");
-
-        Bson filter = Filters.in("genres", param.getParam());
-        FindIterable<Document> movies = collection.find(filter).limit(10);
-
-        if (movies.first() == null) {
-           throw new MongoException("There are no movies of this genre"); 
-        }
-
-        MovieList.Builder listMovies = MovieList.newBuilder();
-
+        MovieList listOfMovies = null;
+        
         try {
+            MongoClient mongoClient = MongoClients.create(settings);
+            MongoDatabase database = mongoClient.getDatabase("sample_mflix");
+            MongoCollection<Document> collection = database.getCollection("movies");
+
+            Bson filter = Filters.in("genres", param.getParam());
+            FindIterable<Document> movies = collection.find(filter).limit(10);
+
+            if (movies.first() == null) {
+                logger.warn("Movies listed by genre failed");
+                responseObserver.onNext(listOfMovies);
+                responseObserver.onCompleted();
+                return;
+            }
+
+            MovieList.Builder listMovies = MovieList.newBuilder();
+
             for (Document docMovie : movies) {
                 Movie movie = documentToMovie(docMovie); 
                 listMovies.addMovies(movie);
             }
-        } catch (NullPointerException npe) {
-            throw new MongoException(npe.getMessage());
+
+            listOfMovies = listMovies.build();
+
+            mongoClient.close();
+
+            logger.info("Movies listed by genre successfully");
+            responseObserver.onNext(listOfMovies);
+            responseObserver.onCompleted();
+        } catch (NullPointerException | MongoException ex) {
+            logger.warn("Movies listed by genre failed");
+            responseObserver.onNext(listOfMovies);
+            responseObserver.onCompleted();
         }
-
-        mongoClient.close();
-
-        responseObserver.onNext(listMovies.build());
-        responseObserver.onCompleted();
     }
 }
 

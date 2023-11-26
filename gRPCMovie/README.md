@@ -42,21 +42,3 @@
 
 - Disponível em `/target/dokkaJavadoc`
 
-## Anotações
-
-- Fazer .proto com as operações que o servidor disponibilizará para o cliente (CRUD e listagens) usando o objeto proto Movie
-
-- Gerar arquivos proto com java como fez-se antes. Se funcionasse o do Kotlin, nos arquivos kt utilizaria os arquivos gerados para Kotlin do protobuf
-
-- A diferença dessa atividade é que não precisamos montar as requisições, elas são definidas no arquivo proto com a integração do gRPC no Protocol Buffers
-
-- Vamos fazer chamadas remotas e não requisições e respostas
-
-- O código vai ficar bem simplificado
-
-- Não precisa de SendThread, ReceiveThread, Parsers, Formaters
-
- - O que tá em CrudMovie vai ser a implementação da interface de serviço
-
-- Colocar código de sucesso/erro, ver comentários, gerar docs, e se tiver tempo, criar threads pra não compartilhar logs 
-
