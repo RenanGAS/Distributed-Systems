@@ -1,2 +1,4 @@
-/home/renangas/Documents/Github Projects/Distributed-Systems/TwitterMQ/src/main/java/project/Consumer.java
-/home/renangas/Documents/Github Projects/Distributed-Systems/TwitterMQ/src/main/java/project/Publisher.java
+/home/renangas/Documents/Github Projects/Distributed-Systems/TwitterMQ/src/main/java/project/Classifier.java
+/home/renangas/Documents/Github Projects/Distributed-Systems/TwitterMQ/src/main/java/project/ProducerQueue.java
+/home/renangas/Documents/Github Projects/Distributed-Systems/TwitterMQ/src/main/java/project/Subscriber.java
+/home/renangas/Documents/Github Projects/Distributed-Systems/TwitterMQ/src/main/java/project/Find.java

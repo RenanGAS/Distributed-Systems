@@ -4,11 +4,14 @@ install:
 compile:
 	mvn clean compile
 
-publisher:
-	mvn exec:java -Dexec.mainClass="project.Publisher"
+producer:
+	mvn exec:java -Dexec.mainClass="project.ProducerQueue"
 
-consumer:
-	mvn exec:java -Dexec.mainClass="project.Consumer"
+classifier:
+	mvn exec:java -Dexec.mainClass="project.Classifier"
+
+subscriber:
+	mvn exec:java -Dexec.mainClass="project.Subscriber"
 
 javadoc:
 	mvn javadoc:javadoc
