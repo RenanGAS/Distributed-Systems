@@ -1,6 +1,34 @@
-Fazer um "Classificador" para iniciar 2 threads com um consumidor para fila e um produtor
-para os tópicos (Tem que usar cd do exchange)
+## Funcionalidades:
 
-Fazer duas classes para servirem de instâncias para consumir os tópicos (Tem que usar cod do exchange)
+- Classificação de tweets por palavras-chave
 
-Depois tem que ver como vou classificar e criar tweets
+- Sistema pub/sub para recebimento de tweets de um tópico
+
+## Recursos:
+
+- RabbitMQ
+
+- Javadoc 
+
+- Conjunto de dados de tweets retirados do Kaggle
+
+## Instruções:
+
+### Para instalação de dependências:
+
+- `make install`
+
+### Para compilação:
+
+- `make compile`
+
+### Para execução:
+
+- `make producer` | `make classifier` | `make subscriber`
+
+### Para geração de documentação para java:
+
+- `make javadoc`
+
+- Disponível em `/target/site/apidocs`
+
