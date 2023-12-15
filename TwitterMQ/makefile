@@ -13,6 +13,9 @@ classifier:
 subscriber:
 	mvn exec:java -Dexec.mainClass="project.Subscriber"
 
+subscriberGo:
+	go run ./src/main/java/project/SubscriberGo.go
+
 javadoc:
 	mvn javadoc:javadoc
 
