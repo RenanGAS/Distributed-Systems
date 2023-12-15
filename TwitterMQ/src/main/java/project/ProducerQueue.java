@@ -21,7 +21,7 @@ public class ProducerQueue {
 
             channel.queueDeclare(QUEUE_NAME, false, false, false, null);
 
-            try (BufferedReader br = new BufferedReader(new FileReader("tweets.csv"))) {
+            try (BufferedReader br = new BufferedReader(new FileReader("tweets2.csv"))) {
                 String line;
                 while ((line = br.readLine()) != null) {
                     if (!line.isBlank()) {
@@ -29,10 +29,12 @@ public class ProducerQueue {
 
                         String tweet;
 
-                        if (values.length > 1) {
-                            tweet = values[0] + ": " + values[1];
+                        if (values.length >= 15) {
+                            tweet = values[14] + ": " + values[10];
+                        } else if (values.length >= 11) {
+                            tweet = "anon: " + values[10];
                         } else {
-                            tweet = values[0];
+                            continue;
                         }
 
                         channel.basicPublish("", QUEUE_NAME, null, tweet.getBytes());
