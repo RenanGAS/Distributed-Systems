@@ -24,7 +24,7 @@
 
 ### Para execução:
 
-- `make producer` | `make classifier` | `make subscriber`
+- `make producer` | `make classifier` | `make subscriberGo`
 
 ### Para geração de documentação para java:
 
